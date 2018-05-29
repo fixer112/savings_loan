@@ -1,0 +1,17 @@
+.table-responsive{
+	margin: 25px 0px 25px 0px;
+}
+.form-group.has-error {
+    color: red;
+}
+.error {
+    margin-top: 25px;
+    margin-right: 50%;
+}
+button a, button a:hover {
+    color: inherit;
+}
+.card-header.history {
+    text-align: center;
+    font-weight: bold;
+}
