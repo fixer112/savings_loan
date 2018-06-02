@@ -1270,6 +1270,27 @@ public function createadmin2(Request $request){
 
     }
 
+    public function veri_interest(Request $request, Loan $loan){
+
+        if (Auth::check() && Auth::user()->role == 'admin') {
+
+           if ($loan && $loan->interest_status != 'paid') {
+            $request->session()->flash('success', 'Loan Interest updated');
+               $loan->update(['interest_status' => 'paid']);
+           }else{
+            $request->session()->flash('failed', 'Loan interest is paid already or no loan exists');
+           }
+           
+
+            return redirect('admin/customer/'.$loan->user_id);
+
+
+            }else {
+            
+            return redirect('/');
+        }
+    }
+
     public function sms($to, $message){
     	$username = 'honeypays01';
     	$password = 'Empress2011';
