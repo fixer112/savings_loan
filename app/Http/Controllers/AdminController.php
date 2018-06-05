@@ -1292,8 +1292,8 @@ public function createadmin2(Request $request){
     }
 
     public function sms($to, $message){
-    	$username = 'honeypays01';
-    	$password = 'Empress2011';
+    	$username = env('SMS_USERNAME');
+        $password = env('SMS_PASSWORD');
     	$sender = 'HONEYPAYS';
     	$data = 'username='.$username.'&password='.$password.'&sender='.$sender.'&to='.$to.'&message='.$message;
 
