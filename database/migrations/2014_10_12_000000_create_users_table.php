@@ -18,6 +18,8 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('username')->unique();
             $table->string('role');
+            $table->string('mentor')->nullable();
+            $table->string('referal')->nullable();
             $table->string('password');
             $table->string('suspend')->default('no');
             //$table->string('email')->unique();

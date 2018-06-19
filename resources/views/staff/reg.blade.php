@@ -65,6 +65,30 @@ HONEYPAYS | Register Customer
                             </div>
                         </div>
 
+                        <div class="form-group{{ $errors->has('mentor') ? ' has-error' : '' }}">
+                            <label for="name" class="col-md-4 control-label">Branch Code</label>
+
+                            <div class="col-md-6">
+                                <select id="mentor" type="text" class="form-control" name="mentor" required autofocus>
+
+                                <option value="" {{old('mentor')== "" ? "selected": ""}}>Choose</option>
+
+                                @foreach($data['nobs'] as $nob)
+
+                                <option value="{{$nob}}" {{old('mentor')== $nob ? "selected": ""}}>{{$nob}}</option>
+
+                                @endforeach
+                                    
+                                </select>
+
+                                @if ($errors->has('mentor'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('mentor') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="form-group{{ $errors->has('username') ? ' has-error' : '' }}">
                             <label for="username" class="col-md-4 control-label">Account Number</label>
 

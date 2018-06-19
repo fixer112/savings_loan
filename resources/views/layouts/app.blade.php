@@ -17,6 +17,8 @@ Developed by Altechtic Solutions | altechtic.com.ng | 08106813749
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+   <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.css') }}" rel="stylesheet">
     <style type="text/css">
         body{
             background-color: blue;
@@ -27,14 +29,14 @@ Developed by Altechtic Solutions | altechtic.com.ng | 08106813749
     </style>
 
    @yield('css')
-   <link href="/public/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+   {{-- <link href="/public/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet"> --}}
 </head>
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    <a href="/"><img src="{{ asset('honeylogo.jpg') }}"></a>
+                    <a href="/"><img src="{{ asset('public/honeylogo.jpg') }}"></a>
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -91,6 +93,12 @@ Developed by Altechtic Solutions | altechtic.com.ng | 08106813749
                                 <a href="/admin2/transaction" class="dropdown-item">Add Transaction</a>
                                 <a href="/admin2/search" class="dropdown-item">Search Customer</a>
                                 <a href="/admin2/changepass" class="dropdown-item">Change Password</a>
+                                <a href="/verify/add" class="dropdown-item">Add Verification</a>
+                                 @endif
+
+                                 @if (Auth::user()->role == 'admin' || Auth::user()->role == 'admin2')
+
+                                 <a href="/verify/view" class="dropdown-item">View Verification</a>
 
                                  @endif
 
@@ -100,6 +108,14 @@ Developed by Altechtic Solutions | altechtic.com.ng | 08106813749
                                 <a href="/customer/collateral" class="dropdown-item">Kin/Garantors</a>
 
                                  @endif
+
+                                 @if (Auth::user()->role != 'customer')
+
+                                 <a href="/referal" class="dropdown-item">Referal</a>
+
+                                 @endif
+
+
 
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
@@ -113,6 +129,20 @@ Developed by Altechtic Solutions | altechtic.com.ng | 08106813749
                                     
                                 </div>
                             </li>
+                            @if (Auth::user()->role == 'admin2' || Auth::user()->role == 'admin' )
+                            <li class="nav-item dropdown">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    <strong>Statistics</strong><span class="caret"></span>
+                                </a>
+
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a href="/stats/day" class="dropdown-item">Today</a>
+                                    <a href="/stats/week" class="dropdown-item">Week</a>
+                                    <a href="/stats/month" class="dropdown-item">Month</a>
+                                    <a href="/stats/all" class="dropdown-item">All time</a>
+                                </div>
+                            </li>
+                            @endif
 
                         @endguest
                     </ul>
@@ -124,12 +154,12 @@ Developed by Altechtic Solutions | altechtic.com.ng | 08106813749
             @yield('content')
         </main>
     </div>
-
+    @yield('modal')
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
-    <script src="/public/vendor/datatables/sb-admin-datatables.min.js"></script>
-    <script src="/public/vendor/datatables/jquery.dataTables.js"></script>
-    <script src="/public/vendor/datatables/dataTables.bootstrap4.js"></script>
+    <script src="{{ asset('vendor/datatables/sb-admin-datatables.min.js') }}"></script>
+    <script src="{{ asset('vendor/datatables/jquery.dataTables.js') }}"></script>
+    <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.js') }}"></script>
     @yield('js')
 </body>
 </html>
