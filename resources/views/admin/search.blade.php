@@ -13,8 +13,15 @@ $id = Auth::user()->id;
 HONEYPAYS | Search
 @endsection
 
-@section('script')
-
+@section('js')
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
 @endsection
 
 @section('menu')
@@ -42,7 +49,7 @@ HONEYPAYS | Search
                         </div>
                     @endif
 
-                    <form class="form-horizontal" method="POST" action="/admin/search">
+                   {{--  <form class="form-horizontal" method="POST" action="/admin/search">
                         {{ csrf_field() }}
                        
                         <div class="form-group{{ $errors->has('search') ? ' has-error' : '' }}">
@@ -64,12 +71,12 @@ HONEYPAYS | Search
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    </form> --}}
 
-                    @if ($_POST)
+                    {{-- @if ($_POST) --}}
                     @if ($searchs->count()>0)
           <div class="table-responsive">
-            <table class="display table table-bordered" id="" width="100%" cellspacing="0">
+            <table class="search table table-bordered" id="" width="100%" cellspacing="0">
               <thead>
                 <tr>
                   <th>Customer Acc No</th>
@@ -113,7 +120,7 @@ HONEYPAYS | Search
          @else
          <div class="alert alert-danger">No Customer Found</div>
         @endif
-        @endif
+        {{-- @endif --}}
 
                    </div>
           </div>

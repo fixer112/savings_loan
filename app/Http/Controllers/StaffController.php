@@ -16,10 +16,11 @@ class StaffController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('staff');
     }
 
     public function index(Request $request){
-    	if (Auth::check() && Auth::user()->role == 'staff') {
+    	
     		$id = Auth::user()->id;
 
     		$approved = History::where('staff_id','=',$id)->where('approved','=','yes')->orderby('updated_at','desc')->take(5000)->get();
@@ -31,27 +32,23 @@ class StaffController extends Controller
     		$customer = new User;
     		
     		return view('staff.home')->with(['approved' => $approved,'customer' => $customer, 'pendings' => $pendings, 'rejected' => $rejected]);
-    	}else {
-    		
-    		return redirect('/');
-    	}
+    	
     }
 
     public function newcus(){
-    	if (Auth::check() && Auth::user()->role == 'staff') {
+    	
     	return view('staff.reg');
-    	}else{
-    		
-    		return redirect('/');
-    	}
+    	
     }
 
 
     public function register(Request $request){
-    	if (Auth::check() && Auth::user()->role == 'staff') {
+    	
     		$validate = $this->validate($request, [
 
     	'name' => 'required',
+
+        'mentor' => 'required|numeric|exists:users,mentor',
 
     	//'email' =>'required|unique:users|email',
 
@@ -102,6 +99,7 @@ class StaffController extends Controller
     	User::create([
             'name' => strtoupper($request->input('name')),
             'username' => $request->input('username'),
+            'referal' => $request->input('mentor'),
             'role' => 'customer',
             'password'=> bcrypt($request->input('password')),
             //'email' => $request->input('email'),
@@ -143,28 +141,22 @@ class StaffController extends Controller
         return redirect('staff/newcustomer');
 
     
-    	}else {
-    		
-    		return redirect('/');
-    	}
+    	
 
 
     }
 
     public function newtran(){
-    	if (Auth::check() && Auth::user()->role == 'staff') {
+    	
     		return view('staff.transaction');
 
-    	}else{
-    		
-    		return redirect('/');
-    	}
+    	
 
 
     }
 
     public function transaction(Request $request){
-    	if (Auth::check() && Auth::user()->role == 'staff') {
+    	
 
     	if ($request->input('type') != 'loan') {
 
@@ -285,7 +277,7 @@ class StaffController extends Controller
 			        ]);
 
     					Loan::create([
-			            'due_date' => DateTime::createFromFormat('m/d/y', $request->input('due_date')),
+			            'due_date' => Carbon::createFromFormat('m/d/y', $request->input('due_date')),
 			            'veri_remark' => 'pending',
 			            'loan_category' => $request->input('category'),
 			            'user_id' => $user->id,
@@ -400,14 +392,11 @@ class StaffController extends Controller
 			    return redirect('staff/transaction');
     		}
 
-    		}else{
-    			
-    		return redirect('/');
-    		}
+    		
     }
 
     	public function changepass(Request $request){
-    		if (Auth::check() && Auth::user()->role == 'staff') {
+    		
 
     			if (!$request->isMethod('put')) {
     				return view('staff.changepass');
@@ -430,31 +419,27 @@ class StaffController extends Controller
     		}
     			}
 
-    	}else {
-                
-            return redirect('/');
-            }
+    	
     }
 
     public function search(Request $request){
 
-    $keyword = $request->input('search');
+    //$keyword = $request->input('search');
 
-    $searchs = User::where(function ($query) use ($keyword) {
+    $searchs = User::where('role', '=', 'customer')->get();
+
+    /*User::where(function ($query) use ($keyword) {
             $query->where('role', '=', 'customer')->where('suspend', '=', 'no');
         })->where(function ($query) use ($keyword) {
         $query->where('username', 'LIKE', '%'.$keyword.'%')
         //->orWhere('email', 'LIKE', '%'.$keyword.'%')
         ->orWhere('number', 'LIKE', '%'.$keyword.'%');
 
-        })->get();
+        })->get();*/
 
-
-    //where('username', 'LIKE', '%'.$keyword.'%')->orWhere('email', 'LIKE', '%'.$keyword.'%')->get();
-
-    //return $searchs.$post;
-    $request->session()->put('search', $keyword);
-    return view('staff.search')->with(['searchs' => $searchs]);
+    //$request->session()->put('search', $keyword);
+    
+    return view('staff.search', compact('searchs'));
     }
 
 
@@ -474,11 +459,8 @@ class StaffController extends Controller
     		 }else {
     		 	return 'You can only view Customer page or customer suspended';
     		 }
-    		
-    	}else {
-    		
-    		return redirect('/');
-    	}
+    	}	
+    	
     }
 
     public function viewcollateral($id){
@@ -486,13 +468,7 @@ class StaffController extends Controller
     	if (Auth::check() && Auth::user()->role == 'staff' && $user) {
 
     		return view('staff.viewcollateral')->with(['user' => $user]);
-
-
-    	}else {
-    		
-    		return redirect('/');
-    	}
-
+        }
     }
 
     public function editcustomer(Request $request, $id){
@@ -616,9 +592,6 @@ class StaffController extends Controller
     		}
 
 
-    	}else {
-    		
-    		return redirect('/');
     	}
 
     }

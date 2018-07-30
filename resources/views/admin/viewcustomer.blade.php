@@ -79,7 +79,18 @@ HONEYPAYS | View Customer- {{$user->username}}
                            @endif
                             </p>
 
-                            <p>Interest Status: <strong style="color: {{ $latest_loan->interest_status =='paid' ? 'green' : 'red' }}" >{{ $latest_loan->interest_status }} </strong></p>
+                            <p>
+                            @if($latest_loan->interest_status !='paid')
+
+                            Interest Status: <strong style="color: red" >{{ $latest_loan->interest_status }} </strong>
+                            <a href="/admin/veri_interest/{{$latest_loan->id}}"><button class="btn btn-success">Verify Interest</button></a>
+
+                            @else
+
+                            Interest Status: <strong style="color: green" >{{ $latest_loan->interest_status }} </strong>
+
+                            @endif
+                            </p>
 
                             <p>Loan Category: {{ $loan->loan_category }} </p>
 

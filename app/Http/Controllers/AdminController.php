@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\History;
 use App\User;
 use App\Loan;
+use App\Verify;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,43 +17,42 @@ class AdminController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('admin');
     }
 
     public function index(Request $request){
-    	if (Auth::check() && Auth::user()->role == 'admin') {
-    		//$id = Auth::user()->id;
+    	
+    		$approved = History::where('approved','=','yes')->orderby('updated_at','desc')->get();
 
-    		$approved = History::where('approved','=','yes')->orderby('updated_at','desc')->take(5000)->get();
+    		$pendings = History::where('approved','=','pending')->orderby('updated_at','desc')->get();
 
-    		$pendings = History::where('approved','=','pending')->orderby('updated_at','desc')->take(5000)->get();
+    		$rejected = History::where('approved','=','no')->orderby('updated_at','desc')->get();
 
-    		$rejected = History::where('approved','=','no')->orderby('updated_at','desc')->take(5000)->get();
+            $loans = new Loan;
+
+             $dues = Verify::where('status', 'approved')->get();
 
     		$customer = new User;
 
     		
-    		return view('admin.home')->with(['approved' => $approved,'customer' => $customer, 'pendings' => $pendings, 'rejected' => $rejected]);
-    	}else {
-    		
-    		return redirect('/');
-    	}
+    		return view('admin.home')->with(['approved' => $approved,'customer' => $customer, 'pendings' => $pendings, 'rejected' => $rejected, 'loans'=>$loans, 'dues'=>$dues]);
+    	
     }
 
     public function newcus(){
-    	if (Auth::check() && Auth::user()->role == 'admin') {
+    	
     	return view('admin.reg');
-    	}else{
-    		
-    		return redirect('/');
-    	}
+    	
     }
 
 
     public function register(Request $request){
-    	if (Auth::check() && Auth::user()->role == 'admin') {
+    	
     		$validate = $this->validate($request, [
 
     	'name' => 'required',
+
+        'mentor' => 'required|numeric|exists:users,mentor',
 
     	//'email' =>'required|unique:users|email',
 
@@ -102,6 +102,7 @@ class AdminController extends Controller
 
     	User::create([
             'name' => strtoupper($request->input('name')),
+            'referal' => $request->input('mentor'),
             'username' => $request->input('username'),
             'role' => 'customer',
             'password'=> bcrypt($request->input('password')),
@@ -143,29 +144,18 @@ class AdminController extends Controller
         $request->session()->flash('success', 'New Customer created successfully');
         return redirect('admin/newcustomer');
 
-    
-    	}else {
-    		
-    		return redirect('/');
-    	}
 
 
     }
 
     public function newtran(){
-    	if (Auth::check() && Auth::user()->role == 'admin') {
+    	
     		return view('admin.transaction');
-
-    	}else{
-    		
-    		return redirect('/');
-    	}
-
 
     }
 
     public function approve(Request $request, $pendingid){
-    	if (Auth::check() && Auth::user()->role == 'admin') {
+    	
 
     	$history = History::where('id', '=', $pendingid)->first();
     	$user = /*$history->user()->first();*/ User::where('id', '=', $history->user_id)->first();
@@ -285,9 +275,12 @@ class AdminController extends Controller
 
     		$balance = $user->savings_balance - $history->debit;
 
+
     					$user->update(['savings_balance' => $balance]);
     					
     						$loan->update(['week_due_date' => Carbon::now()]);
+
+                            $history->update(['approved' => 'yes']);
 
     					if ($latest_loan->week_due_date->diffInWeeks($now) <= 0 && $latest_loan->week_due_date->diffInWeeks($latest_loan->due_date, false) <= 0) {
 
@@ -322,6 +315,8 @@ class AdminController extends Controller
 
 				    	
 				    		$loan->update(['interest_status' => 'paid']);
+
+                            $history->update(['approved' => 'yes']);
 				    	
 
     					$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: ' . $user->username . ' Transaction Type: ' . $request->input('description') . ' Transaction Amt: ' . $debit . ' Avail Savings Bal: ' . $savings_balance . ' Loan Bal: ' . $loan_balance . ' HoneyPays | TrulyPays';
@@ -338,16 +333,10 @@ class AdminController extends Controller
     	$request->session()->flash('failed', 'Transaction not found or transaction is not pending');
 		return redirect('admin');
     	}
-
-    }else{
-    		
-    		return redirect('/');
-    	}
-
     }
 
     public function reject(Request $request, $pendingid){
-    	if (Auth::check() && Auth::user()->role == 'admin') {
+    	
 
     	$history = History::where('id', '=', $pendingid)->first();
     	$user = /*$history->user()->first();*/ User::where('id', '=', $history->user_id)->first();
@@ -365,16 +354,13 @@ class AdminController extends Controller
 		return redirect('admin');
     	}
 
-    }else{
-    		
-    		return redirect('/');
-    	}
+    
 
     }
     
 
     public function transaction(Request $request){
-    	if (Auth::check() && Auth::user()->role == 'admin') {
+    	
 
     		if ($request->input('type') != 'loan') {
 
@@ -761,16 +747,13 @@ class AdminController extends Controller
 			    return redirect('admin/transaction');
     		}
 
-    		}else{
-    			
-    		return redirect('/');
-    		}
+    		
     }
 
 
 
     	public function changepass(Request $request){
-    		if (Auth::check() && Auth::user()->role == 'admin') {
+    		
 
     			if (!$request->isMethod('put')) {
     				return view('admin.changepass');
@@ -793,17 +776,9 @@ class AdminController extends Controller
     		}
     			}
 
-    		}else {
-    			
-    		return redirect('/');
-    		}
-
-
     	}
 
     public function searchstaff(Request $request){
-
-        if (Auth::check() && Auth::user()->role == 'admin') {
 
     $keyword = $request->input('search');
 
@@ -818,32 +793,14 @@ class AdminController extends Controller
 
     $request->session()->put('search', $keyword);
     return view('admin.searchstaff')->with(['searchs' => $searchs]);
-        }else {
-            
-            return redirect('/');
-        }
+        
     }
 
      public function search(Request $request){
 
-        if (Auth::check() && Auth::user()->role == 'admin') {
-    $keyword = $request->input('search');
-
-    $searchs = User::where(function ($query) use ($keyword) {
-            $query->where('role', '=', 'customer');
-        })->where(function ($query) use ($keyword) {
-        $query->where('username', 'LIKE', '%'.$keyword.'%')
-        //->orWhere('email', 'LIKE', '%'.$keyword.'%')
-        ->orWhere('number', 'LIKE', '%'.$keyword.'%');
-
-        })->get();
-
-    $request->session()->put('search', $keyword);
-    return view('admin.search')->with(['searchs' => $searchs]);
-        }else {
-            
-            return redirect('/');
-        }     
+    $searchs = User::where('role', '=', 'customer')->get();
+    return view('admin.search', compact('searchs'));
+             
     }
 
 
@@ -864,10 +821,9 @@ class AdminController extends Controller
     		 	return 'You can only view Customer page';
     		 }
     		
-    	}else {
-    		
-    		return redirect('/');
-    	}
+    	
+        }
+
     }
 
     public function viewcollateral($id){
@@ -876,12 +832,7 @@ class AdminController extends Controller
 
     		return view('admin.viewcollateral')->with(['user' => $user]);
 
-
-    	}else {
-    		
-    		return redirect('/');
-    	}
-
+        }
     }
 
     public function editcustomer(Request $request, $id){
@@ -925,6 +876,8 @@ class AdminController extends Controller
 	        //'number' => 'numeric|unique:users',
 
 	    	//'password' =>'required|min:5|max:20',
+
+            'mentor' => 'required|numeric|exists:users,mentor',
 
 	    	'passport' => 'image|max:100',
 
@@ -993,6 +946,7 @@ class AdminController extends Controller
 
     		$user->update([
     		'name' => strtoupper($request->input('name')),
+            'referal' => $request->input('mentor'),
             //'username' => $request->input('username'),
             //'password'=> bcrypt($request->input('password')),
             'resi_add' => $request->input('resi_add'),
@@ -1020,15 +974,12 @@ class AdminController extends Controller
     		}
 
 
-    	}else {
-    		
-    		return redirect('/');
-    	}
+        }	
 
     }
 
     public function suspend(Request $request, $id){
-        if (Auth::check() && Auth::user()->role == 'admin') {
+        
             
         
         $user = User::where('id', '=', $id)->where('suspend', '=', 'no')->where('role', '!=', 'admin')->first();
@@ -1050,15 +1001,12 @@ class AdminController extends Controller
                 return redirect('/admin/customer/'.$id);
             
         }
-      }else {
-          
-            return redirect('/');
-      }
+      
     }
 
 
     public function unsuspend(Request $request, $id){
-        if (Auth::check() && Auth::user()->role == 'admin') {
+        
             
         
         $user = User::where('id', '=', $id)->where('suspend', '=', 'yes')->where('role', '!=', 'admin')->first();
@@ -1078,35 +1026,31 @@ class AdminController extends Controller
                 $request->session()->flash('failed', 'User does not exixt or currently unuspended.');
             return redirect('/admin/customer/'.$id);
         }
-      }else {
-          
-            return redirect('/');
-      }
+      
     }
 
 
 
     public function addstaff(Request $request){
 
-    	if (Auth::check() && Auth::user()->role == 'admin') {
+    	
 
     		return view('admin/addstaff');
 
-    		}else {
     		
-    		return redirect('/');
-    	}
     }
 
 
 
     public function createstaff(Request $request){
 
-    	if (Auth::check() && Auth::user()->role == 'admin') {
+    	
 
     		$this->validate($request, [
 
     	'name' => 'required',
+
+        'mentor' => 'required|numeric',
 
     	'username' =>'required|unique:users',
 
@@ -1117,20 +1061,18 @@ class AdminController extends Controller
     		User::create([
     			'name' => $request->input('name'),
     			'username' => $request->input('username'),
+                'mentor' => $request->input('mentor'),
     			'password' => bcrypt($request->input('password')),
     			'role' => 'staff',
     			]);
     		$request->session()->flash('success', 'Staff Created successfully');
         	return redirect('/admin/addstaff');
 
-    		}else {
     		
-    		return redirect('/');
-    	}
     }
 
     public function editstaff(Request $request){
-    	if (Auth::check() && Auth::user()->role == 'admin') {
+    	
     	$this->validate($request, [
 
     	'username' =>'required',
@@ -1147,43 +1089,36 @@ class AdminController extends Controller
     		$request->session()->flash('success', 'Staff Password updated successfully');
         	return redirect('/admin/addstaff');
 
-    		}else {
     		
-    		return redirect('/');
-    	}
 
     }
 
     public function addadmin(Request $request){
 
-    	if (Auth::check() && Auth::user()->role == 'admin') {
+    	
 
     		return view('admin/addadmin');
 
-    		}else {
     		
-    		return redirect('/');
-    	}
     }
 
     public function addadmin2(Request $request){
 
-        if (Auth::check() && Auth::user()->role == 'admin') {
+        
 
             return view('admin/addadmin2');
 
-            }else {
             
-            return redirect('/');
-        }
     }
 
     public function createadmin(Request $request){
-    	if (Auth::check() && Auth::user()->role == 'admin') {
+    	
 
     		$this->validate($request, [
 
     	'name' => 'required',
+
+        'mentor' => 'required|numeric',
 
     	'username' =>'required|unique:users',
 
@@ -1194,24 +1129,24 @@ class AdminController extends Controller
     		User::create([
     			'name' => $request->input('name'),
     			'username' => $request->input('username'),
+                'mentor' => $request->input('mentor'),
     			'password' => bcrypt($request->input('password')),
     			'role' => 'admin',
     			]);
     		$request->session()->flash('success', 'Admin created successfully');
         	return redirect('/admin/addadmin');
     	
-    		}else {
     		
-    		return redirect('/');
-    	}
     }
 
 public function createadmin2(Request $request){
-        if (Auth::check() && Auth::user()->role == 'admin') {
+        
 
             $this->validate($request, [
 
         'name' => 'required',
+
+        'mentor' => 'required|numeric',
 
         'username' =>'required|unique:users',
 
@@ -1222,33 +1157,28 @@ public function createadmin2(Request $request){
             User::create([
                 'name' => $request->input('name'),
                 'username' => $request->input('username'),
+                'mentor' => $request->input('mentor'),
                 'password' => bcrypt($request->input('password')),
                 'role' => 'admin2',
                 ]);
             $request->session()->flash('success', 'Admin mini created successfully');
             return redirect('/admin/addadmin2');
         
-            }else {
             
-            return redirect('/');
-        }
     }
 
     public function info(){
-        if (Auth::check() && Auth::user()->role == 'admin') {
+        
 
             $customer = new User;
             return view('admin.info')->with(['customer' => $customer]);
 
-            }else {
             
-            return redirect('/');
-        }
 
     }
 
     public function fee(Request $request, $id){
-        if (Auth::check() && Auth::user()->role == 'admin') {
+        
 
            $loan = Loan::where('id', '=', $id)->first();
 
@@ -1262,31 +1192,25 @@ public function createadmin2(Request $request){
 
             return redirect('admin/customer/'.$loan->user_id);
 
+    }
 
-            }else {
+    public function veri_interest(Request $request, Loan $loan){
+
+        
+
+           if ($loan && $loan->interest_status != 'paid') {
+            $request->session()->flash('success', 'Loan Interest updated');
+               $loan->update(['interest_status' => 'paid']);
+           }else{
+            $request->session()->flash('failed', 'Loan interest is paid already or no loan exists');
+           }
+           
+
+            return redirect('admin/customer/'.$loan->user_id);
+
+
             
-            return redirect('/');
-        }
-
     }
-
-    public function sms($to, $message){
-    	$username = 'honeypays01';
-    	$password = 'Empress2011';
-    	$sender = 'HONEYPAYS';
-    	$data = 'username='.$username.'&password='.$password.'&sender='.$sender.'&to='.$to.'&message='.$message;
-
-    	$ch = curl_init('http://smsc.xwireless.net/API/WebSMS/Http/v1.0a/index.php?'.$data);
-    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    	$response = curl_exec($ch);
-    	curl_close($ch);
-    	return $response;
-    }
-
-    public function naira($number){
-	return "N". number_format($number, 2);
-
-	}
 
 	/*public function send(){
 		return $this->sms('2348106813749', urlencode('This is a test'));

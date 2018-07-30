@@ -38,4 +38,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Loan');
     }
+
+    public function verify()
+    {
+        return $this->hasMany('App\Verify');
+    }
 }

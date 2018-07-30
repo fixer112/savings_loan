@@ -61,6 +61,20 @@ HONEYPAYS | Edit customer
                             </div>
                         </div>
 
+                        <div class="form-group{{ $errors->has('mentor') ? ' has-error' : '' }}">
+                            <label for="name" class="col-md-4 control-label">Branch Number</label>
+
+                            <div class="col-md-6">
+                                <input id="mentor" type="text" class="form-control" name="mentor" value="{{ $user->referal }}" autofocus>
+
+                                @if ($errors->has('mentor'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('mentor') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="form-group{{ $errors->has('username') ? ' has-error' : '' }}">
                             <label for="username" class="col-md-4 control-label">Account Number</label>
 

@@ -7,48 +7,53 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use App\History;
 use App\User;
+use App\Loan;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class Admin2Controller extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('admin2');
     }
 
     public function index(Request $request){
-    	if (Auth::check() && Auth::user()->role == 'admin2') {
+    	
     		$id = Auth::user()->id;
 
-    		$approved = History::where('staff_id','=',$id)->where('approved','=','yes')->orderby('updated_at','desc')->take(5000)->get();
+    		$approved = History::where('staff_id','=',$id)->where('approved','=','yes')->orderby('updated_at','desc')->get();
 
-    		$pendings = History::where('staff_id','=',$id)->where('approved','=','pending')->orderby('updated_at','desc')->take(5000)->get();
+    		$pendings = History::where('staff_id','=',$id)->where('approved','=','pending')->orderby('updated_at','desc')->get();
 
-    		$rejected = History::where('staff_id','=',$id)->where('approved','=','no')->orderby('updated_at','desc')->take(5000)->get();
+    		$rejected = History::where('staff_id','=',$id)->where('approved','=','no')->orderby('updated_at','desc')->get();
+
+             $loans = new Loan;
+
+             $dues = Verify::where('status', 'approved')->get();
+
 
     		$customer = new User;
     		
-    		return view('admin2.home')->with(['approved' => $approved,'customer' => $customer, 'pendings' => $pendings, 'rejected' => $rejected]);
-    	}else {
-    		
-    		return redirect('/');
-    	}
+    		return view('admin2.home')->with(['approved' => $approved,'customer' => $customer, 'pendings' => $pendings, 'rejected' => $rejected, 'loans'=>$loans, 'dues'=>$dues]);
+    	
     }
 
     public function newcus(){
-    	if (Auth::check() && Auth::user()->role == 'admin2') {
+    	
     	return view('admin2.reg');
-    	}else{
-    		
-    		return redirect('/');
-    	}
+    	
     }
 
 
     public function register(Request $request){
-    	if (Auth::check() && Auth::user()->role == 'admin2') {
+    	
     		$validate = $this->validate($request, [
 
     	'name' => 'required',
+
+        'mentor' => 'required|numeric|exists:users,mentor',
 
     	//'email' =>'required|unique:users|email',
 
@@ -98,6 +103,7 @@ class Admin2Controller extends Controller
 
     	User::create([
             'name' => strtoupper($request->input('name')),
+            'referal' => $request->input('mentor'),
             'username' => $request->input('username'),
             'role' => 'customer',
             'password'=> bcrypt($request->input('password')),
@@ -132,7 +138,7 @@ class Admin2Controller extends Controller
 
          $to = $request->input('number');
 
-        $$message = 'Welcome to HONEYPAYS MICRO CREDIT INVESTMENT LIMITED, your account has successfully been created. Acct. NUmber: ' . $request->input('username') . ' Password: '.$request->input('password').' Click here to change your password mcredit.honeypays.com.ng/login';
+        $message = 'Welcome to HONEYPAYS MICRO CREDIT INVESTMENT LIMITED, your account has successfully been created. Acct. NUmber: ' . $request->input('username') . ' Password: '.$request->input('password').' Click here to change your password mcredit.honeypays.com.ng/login';
 
         $request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
@@ -140,28 +146,22 @@ class Admin2Controller extends Controller
         return redirect('admin2/newcustomer');
 
     
-    	}else {
-    		
-    		return redirect('/');
-    	}
+    	
 
 
     }
 
     public function newtran(){
-    	if (Auth::check() && Auth::user()->role == 'admin2') {
+    	
     		return view('admin2.transaction');
 
-    	}else{
-    		
-    		return redirect('/');
-    	}
+    	
 
 
     }
 
     public function transaction(Request $request){
-    	if (Auth::check() && Auth::user()->role == 'admin2') {
+    	
 
     		if ($request->input('type') != 'loan') {
 
@@ -548,14 +548,11 @@ class Admin2Controller extends Controller
 			    return redirect('admin2/transaction');
     		}
 
-    		}else{
-    			
-    		return redirect('/');
-    		}
+    		
     }
 
     	public function changepass(Request $request){
-    		if (Auth::check() && Auth::user()->role == 'admin2') {
+    		
 
     			if (!$request->isMethod('put')) {
     				return view('admin2.changepass');
@@ -578,31 +575,26 @@ class Admin2Controller extends Controller
     		}
     			}
 
-    	}else {
-                
-            return redirect('/');
-            }
-    }
+    	}
+    
 
     public function search(Request $request){
 
-    $keyword = $request->input('search');
+    //$keyword = $request->input('search');
 
-    $searchs = User::where(function ($query) use ($keyword) {
+    $searchs = $searchs = User::where('role', '=', 'customer')->get();
+
+    /*User::where(function ($query) use ($keyword) {
             $query->where('role', '=', 'customer')->where('suspend', '=', 'no');
         })->where(function ($query) use ($keyword) {
         $query->where('username', 'LIKE', '%'.$keyword.'%')
         //->orWhere('email', 'LIKE', '%'.$keyword.'%')
         ->orWhere('number', 'LIKE', '%'.$keyword.'%');
 
-        })->get();
-
-
-    //where('username', 'LIKE', '%'.$keyword.'%')->orWhere('email', 'LIKE', '%'.$keyword.'%')->get();
-
-    //return $searchs.$post;
-    $request->session()->put('search', $keyword);
-    return view('admin2.search')->with(['searchs' => $searchs]);
+        })->get();*/
+    //$request->session()->put('search', $keyword);
+    
+    return view('admin2.search', compact('searchs'));
     }
 
 
@@ -623,9 +615,6 @@ class Admin2Controller extends Controller
     		 	return 'You can only view Customer page or customer suspended';
     		 }
     		
-    	}else {
-    		
-    		return redirect('/');
     	}
     }
 
@@ -634,13 +623,7 @@ class Admin2Controller extends Controller
     	if (Auth::check() && Auth::user()->role == 'admin2' && $user) {
 
     		return view('admin2.viewcollateral')->with(['user' => $user]);
-
-
-    	}else {
-    		
-    		return redirect('/');
-    	}
-
+        }
     }
 
     public function editcustomer(Request $request, $id){
@@ -763,11 +746,9 @@ class Admin2Controller extends Controller
         	return redirect('/admin2/customer/edit/'.$id)->with(['user' => $user]);
     		}
 
-
-    	}else {
-    		
-    		return redirect('/');
-    	}
-
+        }
     }
+
+
+    
 }

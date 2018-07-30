@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             //'email' => 'abula@gmail.com',
             'password' => bcrypt('honeypays2011'),
             'role' => 'admin',
+            'mentor' => '01',
             'username' => '0359791700',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
@@ -45,7 +46,7 @@ class DatabaseSeeder extends Seeder
              ]);
 
         DB::table('users')->insert([
-            'name' => 'Honeypay Customer 1',
+            'name' => 'Honeypay Customer 2',
             //'email' => 'abusk@gmail.com',
             'password' => bcrypt('abula'),
             'role' => 'customer',

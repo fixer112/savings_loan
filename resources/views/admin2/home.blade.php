@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @php
-$id = Auth::user()->id;
+$loan_count = 0;
+ob_start();
 @endphp
 
 @section('css')
@@ -29,6 +30,42 @@ HONEYPAY | {{ Auth::user()->name }}
                 <div class="card-header"><strong>Dashboard</strong></div>
 
             <div class="card-body">
+
+  <div class="row">
+
+  <div class="col-md-4">
+  <a href="/admin2/search"><button type="button" class="btn btn-primary btn-block p-5"><h3 class="text-center">Customers</h3></button></a>
+  </div>
+
+  <div class="col-md-4">
+  <a href="/referal"><button type="button" class="btn btn-primary btn-block p-5"><h3 class="text-center">Referals</h3></button></a>
+  </div>
+
+
+  <div class="col-md-4">
+  <a href="/stats/all"><button type="button" class="btn btn-primary btn-block p-5"><h3 class="text-center">Statistics</h3></button></a>
+  </div>
+
+  
+</div>
+  <br>
+
+<div class="row">
+  <div class="col-md-4">
+  <a href="/verify/add"><button type="button" class="btn btn-primary btn-block p-5"><h3 class="text-center">Add Verification </h3></button></a>
+  </div>
+
+
+  <div class="col-md-4">
+  <a href="/admin2/transaction"><button type="button" class="btn btn-primary btn-block p-5"><h3 class="text-center">Add Transaction</h3></button></a>
+  </div>
+
+  <div class="col-md-4">
+  <a href="/admin2/newcustomer"><button type="button" class="btn btn-primary btn-block p-5"><h3 class="text-center">Add Customers</h3></button></a>
+  </div>
+</div>
+
+<br>
             <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item">
     <a class="nav-link active" id="home-tab" data-toggle="tab" href="#approved" role="tab" aria-controls="approved" aria-selected="true"><b style="color: green">{{$approved->count()}} Approved </b></a>
@@ -38,6 +75,9 @@ HONEYPAY | {{ Auth::user()->name }}
   </li>
   <li class="nav-item">
     <a class="nav-link" id="rejected-tab" data-toggle="tab" href="#rejected" role="tab" aria-controls="rejected" aria-selected="false"><b style="color: red">{{$rejected->count()}} Rejected </b></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="due-tab" data-toggle="tab" href="#due" role="tab" aria-controls="due" aria-selected="false"><b style="color: red">##loan_count## Loan Dues </b></a>
   </li>
 </ul>
 <div class="tab-content" id="myTabContent">
@@ -191,5 +231,67 @@ HONEYPAY | {{ Auth::user()->name }}
         </div>
         @endif
         </div>
+
+  <div class="tab-pane fade" id="due" role="tabpanel" aria-labelledby="due-tab">
+  @if ($dues->count()>0)
+          <div class="table-responsive">
+            <table class="display table table-bordered" id="" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>Customer Acc No</th>
+                  <th>Due Date</th>
+                  <th>Loan Category</th>
+                  <th>Actions</th>
+                  <th>Approved Date</th>
+                  
+
+                </tr>
+              </thead>
+              
+              <tbody>
+              @foreach ($dues as $due)
+                @php
+                $customer_due = $customer->where('id','=',$due->user_id)->first();
+                $loan = $loans->where('user_id', $due->user_id)->latest()->first();
+                $condition = ($loan? $due->updated_at > $loan->updated_at: true);
+                @endphp
+
+                @if ($condition)
+                @php
+                $loan_count += 1;
+                @endphp 
+                <tr>
+                  <td> {{$customer_due->username}} </td>
+                  <td> {{$due->due_date}} </td>
+                  <td> {{$due->loan}} </td>
+                  <td> 
+                    <a href="/{{$due->form1}}"><button class="btn btn-primary
+                    ">Form1</button></a>
+                    <a href="/{{$due->form2}}"><button class="btn btn-primary
+                    ">Form2</button></a>
+                    <a href="/{{$due->form3}}"><button class="btn btn-primary
+                    ">Form3</button></a>
+                  </td>
+                  <td> {{$due->updated_at->format('d/m/Y')}} </td>
+       
+                </tr>
+                @endif
+              @endforeach
+
+              </tbody>
+            </table>
+            
+         </div>
+        
+        @else
+       <div class="alert alert-danger error">
+        NO Rejected Transaction Found
+        </div>
+        @endif
+        </div>
 </div>
+
+@php
+echo str_replace('##loan_count##', $loan_count, ob_get_clean());
+@endphp
 @endsection
