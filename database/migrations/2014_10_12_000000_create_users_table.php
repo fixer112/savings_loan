@@ -21,7 +21,9 @@ class CreateUsersTable extends Migration
             $table->string('mentor')->nullable();
             $table->string('referal')->nullable();
             $table->string('password');
+            $table->string('open_fee')->default('1');
             $table->string('suspend')->default('no');
+            $table->char('api_token', 60)->nullable();
             //$table->string('email')->unique();
             $table->string('resi_add')->nullable();
             $table->string('busi_add')->nullable();

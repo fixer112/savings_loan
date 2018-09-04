@@ -19,6 +19,9 @@ Developed by Altechtic Solutions | altechtic.com.ng | 08106813749
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
    <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.css') }}" rel="stylesheet">
+   {{-- <script src="{{ asset('js/vue.js') }}"></script> --}}
+   {{-- <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.min.js"></script>
+    <script src="{{ asset('js/main.js') }}"></script> --}}
     <style type="text/css">
         body{
             background-color: blue;
@@ -156,6 +159,23 @@ Developed by Altechtic Solutions | altechtic.com.ng | 08106813749
     </div>
     @yield('modal')
     <!-- Scripts -->
+   {{--  <script src="{{ asset('js/main.js') }}"></script> --}}
+   {{-- <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script> --}}
+   {{-- <script src="{{ asset('js/vue.js') }}"></script> --}}
+{{-- <script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: "test",
+            name:"abu",
+        },
+        methods:{
+            test(){
+                alert(this.message);
+            }
+        }
+    })
+    </script> --}}
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('vendor/datatables/sb-admin-datatables.min.js') }}"></script>
     <script src="{{ asset('vendor/datatables/jquery.dataTables.js') }}"></script>

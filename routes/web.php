@@ -29,13 +29,16 @@ Route::get('/', function () {
 Route::get('/home', function () {
         return redirect('/');
 });
-Route::get('/referal', function () {
+Route::get('/referal', function (Request $request) {
     if (Auth::check() && Auth::user()->role == 'customer') {
         return redirect('/');
     }else {
-
-    $referals = User::where('referal', Auth::user()->mentor)->get();
-     return view('referal', compact('referals'));
+    $branch = Auth::user()->mentor;
+    if ($request->branch) {
+        $branch = $request->branch;
+    }
+    $referals = User::where('referal', $branch)->get();
+     return view('referal', compact('referals', 'branch'));
     }
 });
 /*Route::get('calculator', 'CalenderController@index');
@@ -156,6 +159,7 @@ Route::any('/verify/add', 'VerifyController@verifyadd');
 Route::get('/verify/view', 'VerifyController@verifyview');
 Route::get('/verify/reject/{verify}', 'VerifyController@reject');
 Route::get('/verify/approve/{verify}', 'VerifyController@approve');
+Route::get('/verify/active/{verify}', 'VerifyController@activate');
 
 
 //Auth::routes();

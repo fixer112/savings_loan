@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @php
 $loan_count = 0;
+$due_count = 0;
 ob_start();
 @endphp
 
@@ -124,6 +125,7 @@ HONEYPAYS | {{ Auth::user()->name }}
                   <th>Transaction description</th>
                   <th>Debit</th>
                   <th>Credit</th>
+                  <th>Week Due (##due_count##)</th>
                   <th>Applied Date</th>
                   <th>Verified Date</th>
                   
@@ -135,8 +137,20 @@ HONEYPAYS | {{ Auth::user()->name }}
               @foreach ($approved as $approve)
                 @php
                 $customer_approve = $customer->where('id','=',$approve->user_id)->first();
+                $loan = $customer_approve->loan()->orderby('updated_at','desc')->first();
                 $staff_approve = $customer->where('id','=',$approve->staff_id)->first();
+                if (isset($loan) && $loan->veri_remark !='pending'){
+                $latest_loan = $customer_approve->loan()->latest()->first();
+                $week_due_date = $latest_loan->week_due_date;
+                $due_date = $latest_loan->due_date;
+                $skip_due = $latest_loan->skip_due;
+                if($week_due_date->diffInWeeks($due_date, false) >= 0 && $week_due_date->diffInWeeks($now, false) + $skip_due > 0){
+                  $due_count ++; 
+                }
+              }
+                
                 @endphp
+
                 <tr>
                 <td> {{$approve->id}} </td>
                   <td> {{$customer_approve->username}} </td>
@@ -146,6 +160,11 @@ HONEYPAYS | {{ Auth::user()->name }}
                   <td> {{$approve->description}} </td>
                   <td> {{$approve->debit}} </td>
                   <td> {{$approve->credit}} </td>
+                  @if($approve->type == 'loan' && isset($loan) && $loan->veri_remark !='pending')
+                  <td>{{$week_due_date->diffInWeeks($due_date, false) >= 0 ? $week_due_date->diffInWeeks($now, false) + $skip_due : '-'}}</td>
+                  @else
+                  <td> - </td>
+                  @endif
                   <td> {{$approve->created_at->format('d/m/Y H:i:s')}} </td>
                   <td> {{$approve->updated_at->format('d/m/Y H:i:s')}} </td>
        
@@ -275,6 +294,7 @@ HONEYPAYS | {{ Auth::user()->name }}
 
     <div class="tab-pane fade" id="due" role="tabpanel" aria-labelledby="due-tab">
   @if ($dues->count()>0)
+
           <div class="table-responsive">
             <table class="display table table-bordered" id="" width="100%" cellspacing="0">
               <thead>
@@ -288,7 +308,7 @@ HONEYPAYS | {{ Auth::user()->name }}
 
                 </tr>
               </thead>
-              
+             
               <tbody>
               @foreach ($dues as $due)
                 @php
@@ -306,12 +326,14 @@ HONEYPAYS | {{ Auth::user()->name }}
                   <td> {{$due->due_date}} </td>
                   <td> {{$due->loan}} </td>
                   <td> 
-                    <a href="/{{$due->form1}}"><button class="btn btn-primary
+                    <a href="/public/{{$due->form1}}"><button class="btn btn-primary
                     ">Form1</button></a>
-                    <a href="/{{$due->form2}}"><button class="btn btn-primary
+                    <a href="/public/{{$due->form2}}"><button class="btn btn-primary
                     ">Form2</button></a>
-                    <a href="/{{$due->form3}}"><button class="btn btn-primary
+                    <a href="/public/{{$due->form3}}"><button class="btn btn-primary
                     ">Form3</button></a>
+                    <a href="/verify/active/{{$due->id}}"><button class="btn btn-primary
+                    ">Activate</button></a>
                   </td>
                   <td> {{$due->updated_at->format('d/m/Y')}} </td>
        
@@ -333,5 +355,6 @@ HONEYPAYS | {{ Auth::user()->name }}
 </div>
 @php
 echo str_replace('##loan_count##', $loan_count, ob_get_clean());
+echo str_replace('##due_count##', $due_count, ob_get_clean());
 @endphp
 @endsection

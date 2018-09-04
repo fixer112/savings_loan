@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\History;
 use App\User;
 use App\Loan;
+use App\Verify;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 
@@ -193,6 +194,12 @@ class StaffController extends Controller
         ]);
             }
     			$user = User::where('username','=', $request->input('username'))->where('suspend', '=', 'no')->first();
+
+                if ($user->referal != Auth::user()->mentor) {
+                    $request->session()->flash('failed', $request->input('username').' is not branch '.Auth::user()->mentor.' customer');
+                    return redirect('staff/transaction');
+                }
+
     			$loan = $user->loan()->where('veri_remark','=','Not Approved')->orderby('updated_at','desc')->first();
     			$pending = $user->history()->where('approved','=','pending')->orderby('updated_at','desc')->first();
                 $latest_loan = $user->loan()->latest()->first();
@@ -426,7 +433,7 @@ class StaffController extends Controller
 
     //$keyword = $request->input('search');
 
-    $searchs = User::where('role', '=', 'customer')->get();
+    $searchs = User::where('role', '=', 'customer')->where('referal','=', Auth::user()->mentor)->get();
 
     /*User::where(function ($query) use ($keyword) {
             $query->where('role', '=', 'customer')->where('suspend', '=', 'no');
@@ -446,6 +453,10 @@ class StaffController extends Controller
     public function viewcustomer($id){
 
     	$user = User::where('id','=', $id)->where('suspend', '=', 'no')->first();
+        if ($user->referal != Auth::user()->mentor) {
+                    $request->session()->flash('failed', $request->input('username').' is not branch '.Auth::user()->mentor.' customer');
+                    return redirect('staff');
+                }
     	if (Auth::check() && Auth::user()->role == 'staff' && $user) {
     		$loan = $user->loan()->orderby('updated_at','desc')->first();
     		$historys = $user->history()->where('approved','=','yes')->orderby('updated_at','desc')->take(5000)->get();
@@ -465,6 +476,10 @@ class StaffController extends Controller
 
     public function viewcollateral($id){
     	$user = User::where('id','=', $id)->where('suspend', '=', 'no')->first();
+        if ($user->referal != Auth::user()->mentor) {
+                    $request->session()->flash('failed', $request->input('username').' is not branch '.Auth::user()->mentor.' customer');
+                    return redirect('staff');
+                }
     	if (Auth::check() && Auth::user()->role == 'staff' && $user) {
 
     		return view('staff.viewcollateral')->with(['user' => $user]);
@@ -473,6 +488,10 @@ class StaffController extends Controller
 
     public function editcustomer(Request $request, $id){
     	$user = User::where('id','=', $id)->where('suspend', '=', 'no')->first();
+        if ($user->referal != Auth::user()->mentor) {
+                    $request->session()->flash('failed', $request->input('username').' is not branch '.Auth::user()->mentor.' customer');
+                    return redirect('staff');
+                }
 
     	if (Auth::check() && Auth::user()->role == 'staff' && $user) {
 

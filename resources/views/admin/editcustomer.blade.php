@@ -89,7 +89,7 @@ HONEYPAYS | Edit customer
                             <label for="username" class="col-md-4 control-label">Account Number</label>
 
                             <div class="col-md-10">
-                                <input id="username" type="text" class="form-control" name="username" value="{{ $user->username }}"  autofocus disabled>
+                                <input id="username" type="text" class="form-control" name="username" value="{{ $user->username }}"  autofocus>
 
                                 @if ($errors->has('username'))
                                     <span class="help-block">

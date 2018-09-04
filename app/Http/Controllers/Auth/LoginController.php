@@ -57,12 +57,14 @@ class LoginController extends Controller
     public function redirectTo()
  {
     $id = Auth::user()->id;
-
+    Auth::user()->update(['api_token' => str_random(60)]);
+    
     if (Auth::user()->role==='admin') {
         return 'admin/';
     }elseif (Auth::user()->role==='staff') {
          return 'staff/';
     }else{
+        
         return 'customer/';
     }
 

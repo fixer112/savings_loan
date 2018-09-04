@@ -57,7 +57,7 @@ HONEYPAYS | Referals
     <div class="card text-white bg-primary">
       <div class="card-body text-center">
         <h4 class="card-title">Branch No</h4>
-        <p><strong>{{Auth::user()->mentor}}</p></strong>
+        <p><strong>{{$branch}}</p></strong>
       </div>
     </div>
     
@@ -69,6 +69,38 @@ HONEYPAYS | Referals
       </div>
     </div>
     </div>
+
+    <div>
+  <form action="/referal" method="GET" accept-charse="utf-8" class="form-inline">
+
+    @if(Auth::user()->role == 'admin')
+    <div class="input-group mb-2 mr-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text">Branch</div>
+      </div>
+   <select id="branch" type="text" class="form-control" name="branch" required autofocus>
+
+    <option value="" {{ $branch== "" ? "selected": ""}}>Choose</option>
+
+    @foreach($data['nobs'] as $nob)
+
+    <option value="{{$nob}}" {{$branch== $nob ? "selected": ""}}>{{$nob}}</option>
+
+    @endforeach
+                                    
+    </select>
+    @if ($errors->has('branch'))
+      <span class="help-block">
+          <strong>{{ $errors->first('branch') }}</strong>
+      </span>
+    @endif
+  </div>
+  @endif
+    
+    <button type="submit" class="btn btn-primary mb-2">Submit</button>
+  </form>  
+  </div>
+
   </div>
 </div>
 

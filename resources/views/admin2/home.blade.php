@@ -94,6 +94,7 @@ HONEYPAY | {{ Auth::user()->name }}
                   <th>Transaction description</th>
                   <th>Debit</th>
                   <th>Credit</th>
+                  <th>Week Due</th>
                   <th>Applied Date</th>
                   <th>Verified Date</th>
                   
@@ -103,8 +104,18 @@ HONEYPAY | {{ Auth::user()->name }}
               
               <tbody>
               @foreach ($approved as $approve)
+              {{-- @if($approve->user->referal == Auth::user()->mentor) --}}
                 @php
                 $customer_approve = $customer->where('id','=',$approve->user_id)->first();
+                $loan = $customer_approve->loan()->orderby('updated_at','desc')->first();
+                $staff_approve = $customer->where('id','=',$approve->staff_id)->first();
+                if (isset($loan) && $loan->veri_remark !='pending'){
+                $latest_loan = $customer_approve->loan()->latest()->first();
+                $week_due_date = $latest_loan->week_due_date;
+                $due_date = $latest_loan->due_date;
+                $skip_due = $latest_loan->skip_due;
+                }
+                
                 @endphp
                 <tr>
                 <td> {{$approve->id}} </td>
@@ -114,10 +125,16 @@ HONEYPAY | {{ Auth::user()->name }}
                   <td> {{$approve->description}} </td>
                   <td> {{$approve->debit}} </td>
                   <td> {{$approve->credit}} </td>
+                  @if($approve->type == 'loan' && isset($loan) && $loan->veri_remark !='pending')
+                  <td>{{$week_due_date->diffInWeeks($due_date, false) >= 0 ? $week_due_date->diffInWeeks($now, false) + $skip_due : '0'}}</td>
+                  @else
+                  <td> - </td>
+                  @endif
                   <td> {{$approve->created_at->format('d/m/Y H:i:s')}} </td>
                   <td> {{$approve->updated_at->format('d/m/Y H:i:s')}} </td>
        
                 </tr>
+                {{-- @endif --}}
               @endforeach
 
               </tbody>
@@ -145,6 +162,7 @@ HONEYPAY | {{ Auth::user()->name }}
                   <th>Debit</th>
                   <th>Credit</th>
                   <th>Applied Date</th>
+                  <th>Actions</th>
                   
                   
 
@@ -165,6 +183,8 @@ HONEYPAY | {{ Auth::user()->name }}
                   <td> {{$pending->debit}} </td>
                   <td> {{$pending->credit}} </td>
                   <td> {{$pending->created_at->format('d/m/Y H:i:s')}} </td>
+                  <td><a href="/admin/aprove/{{$pending->id}}"><button class="btn btn-success"><i class="fa fa-eye"></i>Approve</button></a>
+                  <a href="/admin/reject/{{$pending->id}}"><button class="btn btn-danger"><i class="fa fa-edit"></i>Reject</button></a></td>
                   
        
                 </tr>
@@ -203,6 +223,7 @@ HONEYPAY | {{ Auth::user()->name }}
               
               <tbody>
               @foreach ($rejected as $reject)
+              {{-- @if($reject->user()->referal == Auth::user()->mentor) --}}
                 @php
                 $customer_reject = $customer->where('id','=',$reject->user_id)->first();
                 @endphp
@@ -218,6 +239,7 @@ HONEYPAY | {{ Auth::user()->name }}
                   <td> {{$reject->updated_at->format('d/m/Y H:i:s')}} </td>
        
                 </tr>
+               {{--  @endif --}}
               @endforeach
 
               </tbody>
@@ -257,6 +279,7 @@ HONEYPAY | {{ Auth::user()->name }}
                 @endphp
 
                 @if ($condition)
+                {{-- @if($due->user()->referal == Auth::user()->mentor) --}}
                 @php
                 $loan_count += 1;
                 @endphp 
@@ -265,16 +288,17 @@ HONEYPAY | {{ Auth::user()->name }}
                   <td> {{$due->due_date}} </td>
                   <td> {{$due->loan}} </td>
                   <td> 
-                    <a href="/{{$due->form1}}"><button class="btn btn-primary
+                    <a href="/public/{{$due->form1}}"><button class="btn btn-primary
                     ">Form1</button></a>
-                    <a href="/{{$due->form2}}"><button class="btn btn-primary
+                    <a href="/public/{{$due->form2}}"><button class="btn btn-primary
                     ">Form2</button></a>
-                    <a href="/{{$due->form3}}"><button class="btn btn-primary
+                    <a href="/public/{{$due->form3}}"><button class="btn btn-primary
                     ">Form3</button></a>
                   </td>
                   <td> {{$due->updated_at->format('d/m/Y')}} </td>
        
                 </tr>
+                {{-- @endif --}}
                 @endif
               @endforeach
 

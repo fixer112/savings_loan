@@ -14,7 +14,7 @@ class VerifyController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('admin2')->only('verifyadd');
-        $this->middleware('admin')->except('verifyadd');
+        $this->middleware('admin')->only('reject','approve','activate');
     }
 
     public function verifyadd(Request $request){
@@ -133,5 +133,14 @@ class VerifyController extends Controller
 
     	return back();
     	}
+
+        public function activate(Request $request, Verify $verify){
+            if ($verify->active == '0') {
+            $verify->update(['active' => '1']);
+            $request->session()->flash('success', 'Due activated');
+                
+            }
+            return back();
+        }
 
 }

@@ -17,10 +17,13 @@ class AdminController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin');
+        $this->middleware('admin')->except('approve','reject');
+        $this->middleware('super')->only('approve', 'reject');
     }
 
     public function index(Request $request){
+
+            //$latest_loan = Auth::user()->loan()->latest()->first();
     	
     		$approved = History::where('approved','=','yes')->orderby('updated_at','desc')->get();
 
@@ -30,12 +33,13 @@ class AdminController extends Controller
 
             $loans = new Loan;
 
-             $dues = Verify::where('status', 'approved')->get();
+             $dues = Verify::where('status', 'approved')->where('active','0')->get();
 
     		$customer = new User;
+            $now = Carbon::now();
 
     		
-    		return view('admin.home')->with(['approved' => $approved,'customer' => $customer, 'pendings' => $pendings, 'rejected' => $rejected, 'loans'=>$loans, 'dues'=>$dues]);
+    		return view('admin.home')->with(['approved' => $approved,'customer' => $customer, 'pendings' => $pendings, 'rejected' => $rejected, 'loans'=>$loans, 'dues'=>$dues, 'now'=>$now]);
     	
     }
 
@@ -141,7 +145,7 @@ class AdminController extends Controller
 
     	$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 			        
-        $request->session()->flash('success', 'New Customer created successfully');
+        $request->session()->flash('success', 'New Customer '.$request->input('username').' created successfully');
         return redirect('admin/newcustomer');
 
 
@@ -186,7 +190,7 @@ class AdminController extends Controller
 		$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
 		$request->session()->flash('success', $history->type.' successfully applied for '.$user->username);
-		return redirect('admin');
+		return back();
     	}
 
     	if ($history->type == 'deposit') {
@@ -200,6 +204,8 @@ class AdminController extends Controller
     					if ($loan) {
     						$loan->update(['veri_remark' => 'Approved']);
     					}
+                        //
+                        
 
                         if ($latest_loan && $latest_loan->week_due_date->diffInWeeks($now, false) > 0 && $latest_loan->week_due_date->diffInWeeks($latest_loan->due_date, false) > 0 ) {
 
@@ -248,8 +254,31 @@ class AdminController extends Controller
 
     				$history->update(['approved' => 'yes']);
 
+                if ($user->open_fee=='1') {
+                           $balance = $user->savings_balance - 2000;
+                           $user->update([
+                           'savings_balance' => $balance,
+                           'open_fee' => '0',
+                            ]);
+
+                           History::create([
+                        'recieved_by' => 'HoneyPays Mcredit',
+                        'description' => 'Account Opening Fee',
+                        'debit' => '2000',
+                        'credit' => '0',
+                        'type' => 'withdraw',
+                        'approved' => 'yes',
+                        'user_id' => $user->id,
+                    ]);
+                        $savings_balance = $this->naira($user->savings_balance);
+
+                        $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Amount of N2000.00 has been deducted from your savings balance has account open fee, your new balance is '.$savings_balance;
+                        
+                        $this->sms($to, urlencode($message));
+                        }
+
     			$request->session()->flash('success', $history->type.' successfully applied for '.$user->username);
-				return redirect('admin');
+				return back();
     	}
     	if ($history->type == 'loan') {
     		//update loan balance
@@ -268,7 +297,7 @@ class AdminController extends Controller
     			$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
     		$request->session()->flash('success', $history->type.' successfully applied for '.$user->username);
-			return redirect('admin');
+			return back();
     		}
 
     	if ($history->type == 'default_fee') {
@@ -299,7 +328,7 @@ class AdminController extends Controller
 
 
 			        $request->session()->flash('success', $request->input('type').' successfully applied for '.$request->input('username'));
-    					return redirect('admin');
+    					return back();
     		
     		}
 
@@ -325,13 +354,13 @@ class AdminController extends Controller
 
 
 			        $request->session()->flash('success', $request->input('type').' successfully applied for '.$request->input('username'));
-    					return redirect('admin/transaction');
+    					return back();
     			
     		}
 
     	}else {
     	$request->session()->flash('failed', 'Transaction not found or transaction is not pending');
-		return redirect('admin');
+		return back();
     	}
     }
 
@@ -347,11 +376,11 @@ class AdminController extends Controller
     		$history->update(['approved' => 'no']);
 
     	$request->session()->flash('success', 'Transaction rejected successfully');
-		return redirect('admin');
+		return back();
     	
     	}else {
     	$request->session()->flash('failed', 'Transaction not found or transaction is not pending');
-		return redirect('admin');
+		return back();
     	}
 
     
@@ -444,12 +473,12 @@ class AdminController extends Controller
 
 			    		$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 			    		
-    					return redirect('admin/transaction');
+    					return back();
 
 			    			}else {
 			    			$request->session()->flash('failed', $request->input('username').' has Insufficient Account Balance or has a pending transaction or has an unpaid loan or amount is less than 0');
 			    			
-			    			return redirect('admin/transaction');
+			    			return back();
 			    			}
 
 			    		}
@@ -486,6 +515,8 @@ class AdminController extends Controller
     					if ($loan) {
     						$loan->update(['veri_remark' => 'Approved']);
     					}
+
+
 
 
     					$amount = $this->naira($request->input('amount'));
@@ -527,13 +558,35 @@ class AdminController extends Controller
     				}
 
     				//}
+                    if ($user->open_fee=='1') {
+                           $balance = $user->savings_balance - 2000;
+                           $user->update([
+                           'savings_balance' => $balance,
+                           'open_fee' => '0',
+                            ]);
+
+                           History::create([
+                        'recieved_by' => 'HoneyPays Mcredit',
+                        'description' => 'Account Opening Fee',
+                        'debit' => '2000',
+                        'credit' => '0',
+                        'type' => 'withdraw',
+                        'approved' => 'yes',
+                        'user_id' => $user->id,
+                    ]);
+                        $savings_balance = $this->naira($user->savings_balance);
+
+                        $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Amount of N2000.00 has been deducted from your savings balance has account open fee, your new balance is '.$savings_balance;
+                        
+                        $this->sms($to, urlencode($message));
+                        }
 			        $request->session()->flash('success', $request->input('type').' successfully applied for '.$request->input('username'));
 			        //return $pending."</br>".$loan;
-    					return redirect('admin/transaction');
+    					return back();
     					}else {
     						$request->session()->flash('failed', $request->input('username').'  has a pending transaction awaiting approval');
 			    			// return $pending."</br>".$loan;
-			    			return redirect('admin/transaction');
+			    			return back();
     					}
     				
     				
@@ -585,11 +638,11 @@ class AdminController extends Controller
 
 
 			        $request->session()->flash('success', $request->input('type').' successfully applied for '.$request->input('username'));
-    					return redirect('admin/transaction');
+    					return back();
 
     				}else {
     					$request->session()->flash('failed', $request->input('username').' has unpaid interest fee or default fee');
-			    		return redirect('admin/transaction');
+			    		return back();
 			    	}
 
                 }else {
@@ -626,12 +679,12 @@ class AdminController extends Controller
 
 
                     $request->session()->flash('success', $request->input('type').' successfully applied for '.$request->input('username'));
-                        return redirect('admin/transaction');
+                        return back();
                 }
     					
     				}else {
     					$request->session()->flash('failed', $request->input('username').' has a pending transaction or has an unpaid loan');
-			    		return redirect('admin/transaction');
+			    		return back();
     				}
     				
     			
@@ -677,17 +730,17 @@ class AdminController extends Controller
 
 
 			        $request->session()->flash('success', $request->input('type').' successfully applied for '.$request->input('username'));
-    					return redirect('admin/transaction');
+    					return back();
                     
     					
     				}else {
     					$request->session()->flash('failed', $request->input('username').' has Insufficient fund.');
-			    		return redirect('admin/transaction');
+			    		return back();
     				}
 
                     }else {
                         $request->session()->flash('failed', $request->input('username').' has no loan history');
-                        return redirect('admin/transaction');
+                        return back();
                     }
     				
     			}
@@ -728,23 +781,23 @@ class AdminController extends Controller
 
 
 			        $request->session()->flash('success', $request->input('type').' successfully applied for '.$request->input('username'));
-    					return redirect('admin/transaction');
+    					return back();
 
 
     				}else {
     				$request->session()->flash('failed', $request->input('username').' has Insufficient fund or interest already paid');
-			    	return redirect('admin/transaction');
+			    	return back();
     				}
 
     				}else {
                         $request->session()->flash('failed', $request->input('username').' has no loan history');
-                        return redirect('admin/transaction');
+                        return back();
                     }
     			}
 
     		}else{
     			$request->session()->flash('failed', $request->input('username').' is not a customer');
-			    return redirect('admin/transaction');
+			    return back();
     		}
 
     		
@@ -768,10 +821,10 @@ class AdminController extends Controller
     			
     			Auth::user()->update(['password' => bcrypt($request->input('new_password'))]);
     			$request->session()->flash('success', 'Password Changed successfully');
-    			return redirect('/admin/changepass');
+    			return back();
     		}else{
     			$request->session()->flash('failed', 'Old Password is invalid');
-    			return redirect('/admin/changepass');
+    			return back();
 
     		}
     			}
@@ -878,6 +931,7 @@ class AdminController extends Controller
 	    	//'password' =>'required|min:5|max:20',
 
             'mentor' => 'required|numeric|exists:users,mentor',
+            'username' => 'numeric|digits:10|unique:users',
 
 	    	'passport' => 'image|max:100',
 
@@ -947,7 +1001,7 @@ class AdminController extends Controller
     		$user->update([
     		'name' => strtoupper($request->input('name')),
             'referal' => $request->input('mentor'),
-            //'username' => $request->input('username'),
+            'username' => $request->input('username'),
             //'password'=> bcrypt($request->input('password')),
             'resi_add' => $request->input('resi_add'),
             'busi_add' => $request->input('busi_add'),

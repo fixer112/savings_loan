@@ -38,6 +38,8 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Session\Middleware\StartSession::class,
             'throttle:60,1',
             'bindings',
         ],
@@ -63,5 +65,6 @@ class Kernel extends HttpKernel
         'admin2' => \App\Http\Middleware\admin2::class,
         'staff' => \App\Http\Middleware\staff::class,
         'super' => \App\Http\Middleware\super::class,
+        //'csrf' => \App\Http\Middleware\VerifyCsrfToken::class,
     ];
 }

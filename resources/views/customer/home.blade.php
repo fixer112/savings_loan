@@ -52,7 +52,7 @@ $id = Auth::user()->id;
                             Savings Account Balance : <strong>&#8358 {{ Auth::user()->savings_balance }}</strong>
                             <p>Loan Balance : <strong>&#8358 {{ Auth::user()->loan_balance }}</strong></p><hr>
 
-                            <div class="img"><img src="/{{Auth::user()->passport}}"></div>
+                            <div class="img"><img src="/public/{{Auth::user()->passport}}"></div>
 
 
                             <p>Name: {{ Auth::user()->name }}</p>

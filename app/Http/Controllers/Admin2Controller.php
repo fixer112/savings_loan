@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\History;
 use App\User;
 use App\Loan;
+use App\Verify;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 
@@ -21,22 +22,24 @@ class Admin2Controller extends Controller
 
     public function index(Request $request){
     	
-    		$id = Auth::user()->id;
+    		$id = Auth::user()->mentor;
+            $referal = User::where('referal',$id)->pluck('id');
 
-    		$approved = History::where('staff_id','=',$id)->where('approved','=','yes')->orderby('updated_at','desc')->get();
+    		$approved = History::where('approved','=','yes')->whereIn('user_id',$referal)->orderby('updated_at','desc')->get();
 
-    		$pendings = History::where('staff_id','=',$id)->where('approved','=','pending')->orderby('updated_at','desc')->get();
+    		$pendings = History::where('approved','=','pending')->whereIn('user_id',$referal)->orderby('updated_at','desc')->get();
 
-    		$rejected = History::where('staff_id','=',$id)->where('approved','=','no')->orderby('updated_at','desc')->get();
+    		$rejected = History::where('approved','=','no')->whereIn('user_id',$referal)->orderby('updated_at','desc')->get();
 
              $loans = new Loan;
 
-             $dues = Verify::where('status', 'approved')->get();
+             $dues = Verify::where('status', 'approved')->whereIn('user_id',$referal)->where('active','0')->get();
 
 
     		$customer = new User;
+             $now = Carbon::now();
     		
-    		return view('admin2.home')->with(['approved' => $approved,'customer' => $customer, 'pendings' => $pendings, 'rejected' => $rejected, 'loans'=>$loans, 'dues'=>$dues]);
+    		return view('admin2.home')->with(['approved' => $approved,'customer' => $customer, 'pendings' => $pendings, 'rejected' => $rejected, 'loans'=>$loans, 'dues'=>$dues, 'now'=>$now]);
     	
     }
 
@@ -199,6 +202,10 @@ class Admin2Controller extends Controller
 	    	}
 
     			$user = User::where('username','=', $request->input('username'))->first();
+                if ($user->referal != Auth::user()->mentor) {
+                    $request->session()->flash('failed', $request->input('username').' is not branch '.Auth::user()->mentor.' customer');
+                    return redirect('admin2/transaction');
+                }
     			$loan = $user->loan()->where('veri_remark','=','Not Approved')->orderby('updated_at','desc')->first();
     			$pending = $user->history()->where('approved','=','pending')->orderby('updated_at','desc')->first();
     			$latest_loan = $user->loan()->latest()->first();
@@ -328,6 +335,28 @@ class Admin2Controller extends Controller
     				}
 
     				//}
+                    if ($user->open_fee=='1') {
+                           $balance = $user->savings_balance - 2000;
+                           $user->update([
+                           'savings_balance' => $balance,
+                           'open_fee' => '0',
+                            ]);
+
+                           History::create([
+                        'recieved_by' => 'HoneyPays Mcredit',
+                        'description' => 'Account Opening Fee',
+                        'debit' => '2000',
+                        'credit' => '0',
+                        'type' => 'withdraw',
+                        'approved' => 'yes',
+                        'user_id' => $user->id,
+                    ]);
+                        $savings_balance = $this->naira($user->savings_balance);
+
+                        $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Amount of N2000.00 has been deducted from your savings balance has account open fee, your new balance is '.$savings_balance;
+                        
+                        $this->sms($to, urlencode($message));
+                        }
 			        $request->session()->flash('success', $request->input('type').' successfully applied for '.$request->input('username'));
 			        //return $pending."</br>".$loan;
     					return redirect('admin2/transaction');
@@ -582,7 +611,7 @@ class Admin2Controller extends Controller
 
     //$keyword = $request->input('search');
 
-    $searchs = $searchs = User::where('role', '=', 'customer')->get();
+    $searchs = $searchs = User::where('role', '=', 'customer')->where('referal','=', Auth::user()->mentor)->get();
 
     /*User::where(function ($query) use ($keyword) {
             $query->where('role', '=', 'customer')->where('suspend', '=', 'no');
@@ -601,6 +630,10 @@ class Admin2Controller extends Controller
     public function viewcustomer($id){
 
     	$user = User::where('id','=', $id)->where('suspend', '=', 'no')->first();
+        if ($user->referal != Auth::user()->mentor) {
+                    $request->session()->flash('failed', $request->input('username').' is not branch '.Auth::user()->mentor.' customer');
+                    return redirect('admin2');
+                }
     	if (Auth::check() && Auth::user()->role == 'admin2' && $user) {
     		$loan = $user->loan()->orderby('updated_at','desc')->first();
     		$historys = $user->history()->where('approved','=','yes')->orderby('updated_at','desc')->take(5000)->get();
@@ -620,6 +653,10 @@ class Admin2Controller extends Controller
 
     public function viewcollateral($id){
     	$user = User::where('id','=', $id)->where('suspend', '=', 'no')->first();
+        if ($user->referal != Auth::user()->mentor) {
+                    $request->session()->flash('failed', $request->input('username').' is not branch '.Auth::user()->mentor.' customer');
+                    return redirect('admin2');
+                }
     	if (Auth::check() && Auth::user()->role == 'admin2' && $user) {
 
     		return view('admin2.viewcollateral')->with(['user' => $user]);
@@ -628,6 +665,10 @@ class Admin2Controller extends Controller
 
     public function editcustomer(Request $request, $id){
     	$user = User::where('id','=', $id)->where('suspend', '=', 'no')->first();
+        if ($user->referal != Auth::user()->mentor) {
+                    $request->session()->flash('failed', $request->input('username').' is not branch '.Auth::user()->mentor.' customer');
+                    return redirect('admin2');
+                }
 
     	if (Auth::check() && Auth::user()->role == 'admin2' && $user) {
 

@@ -29,6 +29,41 @@ HONEYPAY | {{ Auth::user()->name }}
                 <div class="card-header"><strong>Dashboard</strong></div>
 
             <div class="card-body">
+               <div class="row">
+
+  <div class="col-md-6">
+  <a href="/staff/search"><button type="button" class="btn btn-primary btn-block p-5"><h3 class="text-center">Customers</h3></button></a>
+  </div>
+
+  <div class="col-md-6">
+  <a href="/referal"><button type="button" class="btn btn-primary btn-block p-5"><h3 class="text-center">Referals</h3></button></a>
+  </div>
+
+
+  {{-- <div class="col-md-4">
+  <a href="/stats/all"><button type="button" class="btn btn-primary btn-block p-5"><h3 class="text-center">Statistics</h3></button></a>
+  </div> --}}
+
+  
+</div>
+  <br>
+
+<div class="row">
+  {{-- <div class="col-md-4">
+  <a href="/verify/add"><button type="button" class="btn btn-primary btn-block p-5"><h3 class="text-center">Add Verification </h3></button></a>
+  </div> --}}
+
+
+  <div class="col-md-6">
+  <a href="/staff/transaction"><button type="button" class="btn btn-primary btn-block p-5"><h3 class="text-center">Add Transaction</h3></button></a>
+  </div>
+
+  <div class="col-md-6">
+  <a href="/staff/newcustomer"><button type="button" class="btn btn-primary btn-block p-5"><h3 class="text-center">Add Customers</h3></button></a>
+  </div>
+</div>
+
+<br>
             <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item">
     <a class="nav-link active" id="home-tab" data-toggle="tab" href="#approved" role="tab" aria-controls="approved" aria-selected="true"><b style="color: green">{{$approved->count()}} Approved </b></a>

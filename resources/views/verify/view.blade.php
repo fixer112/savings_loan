@@ -85,11 +85,11 @@ HONEYPAY | {{ Auth::user()->name }}
                   <td> {{$approve->loan}} </td>
                   <td> {{$customer_approve->username}} </td>
                   <td>
-                    <a href="/{{$approve->form1}}"><button class="btn btn-primary
+                    <a href="/public/{{$approve->form1}}"><button class="btn btn-primary
                     ">Form1</button></a>
-                    <a href="/{{$approve->form2}}"><button class="btn btn-primary
+                    <a href="/public/{{$approve->form2}}"><button class="btn btn-primary
                     ">Form2</button></a>
-                    <a href="/{{$approve->form3}}"><button class="btn btn-primary
+                    <a href="/public/{{$approve->form3}}"><button class="btn btn-primary
                     ">Form3</button></a>
                   </td>
                   <td> {{$approve->created_at->format('d/m/Y H:i:s')}} </td>
@@ -135,16 +135,18 @@ HONEYPAY | {{ Auth::user()->name }}
                 <td> {{$pending->loan}} </td>
                   <td> {{$customer_pending->username}} </td>
                   <td>
-                    <a href="/{{$pending->form1}}"><button class="btn btn-primary
+                    <a href="/public/{{$pending->form1}}"><button class="btn btn-primary
                     ">Form1</button></a>
-                    <a href="/{{$pending->form2}}"><button class="btn btn-primary
+                    <a href="/public/{{$pending->form2}}"><button class="btn btn-primary
                     ">Form2</button></a>
-                    <a href="/{{$pending->form3}}"><button class="btn btn-primary
+                    <a href="/public/{{$pending->form3}}"><button class="btn btn-primary
                     ">Form3</button></a>
+                    @if(Auth::user()->role == 'admin')
                     <a href="#approve" aria-expanded="false" data-toggle="modal"><button onclick="actionapprove(document.getElementById('formapprove'), {{$pending->id}});" class="btn btn-success
                     ">Approve</button></a>
                     <a href="#reject" aria-expanded="false" data-toggle="modal"><button onclick="actionreject(document.getElementById('formreject'), {{$pending->id}});" class="btn btn-danger
                     ">Reject</button></a>
+                    @endif
                   </td>
                   <td> {{$pending->created_at->format('d/m/Y H:i:s')}} </td>
                   
@@ -190,11 +192,11 @@ HONEYPAY | {{ Auth::user()->name }}
                   <td> {{$customer_reject->username}} </td>
                   <td>{{$reject->reason}}</td>
                   <td>
-                    <a href="/{{$reject->form1}}"><button class="btn btn-primary
+                    <a href="/public/{{$reject->form1}}"><button class="btn btn-primary
                     ">Form1</button></a>
-                    <a href="/{{$reject->form2}}"><button class="btn btn-primary
+                    <a href="/public/{{$reject->form2}}"><button class="btn btn-primary
                     ">Form2</button></a>
-                    <a href="/{{$reject->form3}}"><button class="btn btn-primary
+                    <a href="/public/{{$reject->form3}}"><button class="btn btn-primary
                     ">Form3</button></a>
                   </td>
                   <td> {{$reject->created_at->format('d/m/Y H:i:s')}} </td>
