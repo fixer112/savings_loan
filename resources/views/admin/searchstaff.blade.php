@@ -14,7 +14,26 @@ HONEYPAYS | Search
 @endsection
 
 @section('script')
+<script>
+  function del(id){
+    var del = confirm("Are u sure ?");
+    if(del){
+      /*var url = window.location.hostname+'/delete/'+id;
+      var form = $('form action="'+url+'"method="post"></form>');
+      $('body').append(form);
+      form.submit();*/
+      //alert(window.location.hostname+'/delete/'+id);
+      window.location.replace('/delete/'+id);
+    }
+  }
+  function role(id, username){
+    //var
+    $("#roles").attr("action", "/role/" + id);
+    $(".modal-title").html("<span>Change Role for "+username+"</span>");
+    //window.id =  id;
 
+  }
+</script>
 @endsection
 
 @section('menu')
@@ -92,7 +111,10 @@ HONEYPAYS | Search
                   @else
                   <button class="btn btn-success"><i class="fa fa-play"></i><a href="/admin/unsuspend/{{$search->id}}">Unsuspend</a></button>
                   @endif
+                   <button class="btn btn-danger" onclick="del({{$search->id}})">Delete</button>
+                   <button class="btn btn-primary" data-toggle="modal" data-target="#role" onclick="role({{$search->id}}, {{$search->username}})">Change Role</button>
                   </td>
+
        
                 </tr>
               @endforeach
@@ -112,4 +134,50 @@ HONEYPAYS | Search
     </div>
 </div>
 
+@endsection
+@section('modal')
+<div class="modal fade" id="role" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100 font-weight-bold"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" action="" id="roles">
+               @csrf
+           {{--  <div class="modal-body mx-3">
+                <div class="md-form mb-5">
+                    <i class="fa fa-envelope prefix grey-text"></i>
+                    <input type="username" id="defaultForm-email" class="form-control validate">
+                    <label data-error="wrong" data-success="right" for="defaultForm-email">Account number</label>
+                </div> --}}
+
+                <div class="md-form mb-4">
+                    <i class="fa fa-user prefix grey-text"></i>
+                    <label data-error="wrong" data-success="right" for="defaultForm-pass">Roles</label>
+                    <select name="role" id="defaultForm-pass" class="form-control validate">
+                      <option value="admin">Admin</option>
+                      <option value="admin2">Admin Mini</option>
+                      <option value="staff">Staff</option>
+                    </select>
+
+                </div>
+
+                <div class="modal-footer d-flex justify-content-center">
+                <button class="btn btn-default">Submit</button>
+            </div>
+
+            </div>
+            {{-- <div class="modal-footer d-flex justify-content-center">
+                <button class="btn btn-default">Login</button>
+            </div> --}}
+        </div>
+    </div>
+</div>
+
+{{-- <div class="text-center">
+    <a href="" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalLoginForm">Launch Modal Login Form</a>
+</div> --}}
 @endsection

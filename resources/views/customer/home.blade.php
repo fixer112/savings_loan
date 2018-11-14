@@ -49,8 +49,8 @@ $id = Auth::user()->id;
                     <div class="col-md">
 
                         
-                            Savings Account Balance : <strong>&#8358 {{ Auth::user()->savings_balance }}</strong>
-                            <p>Loan Balance : <strong>&#8358 {{ Auth::user()->loan_balance }}</strong></p><hr>
+                            Savings Account Balance : <strong>@money(Auth::user()->savings_balance)</strong>
+                            <p>Loan Balance : <strong>@money(Auth::user()->loan_balance) </strong></p><hr>
 
                             <div class="img"><img src="/public/{{Auth::user()->passport}}"></div>
 
@@ -85,7 +85,7 @@ $id = Auth::user()->id;
 
                             <p>Interest Status: <strong style="color: {{ $latest_loan->Interest_status =='paid' ? 'green' : 'red' }}" >{{ $loan->veri_remark }} </strong></p>
 
-                            <p>Loan Category: {{ $loan->loan_category }} </p>
+                            <p>Loan Category: @money($loan->loan_category) </p>
 
                             <p >Verification Remark: <strong style="color: {{ $loan->veri_remark =='Approved' ? 'green' : 'red' }}" >{{ $loan->veri_remark }} </strong></p>
                             @else
@@ -201,8 +201,8 @@ $id = Auth::user()->id;
                   <td> {{$history->type}} </td>
                   <td> {{$history->recieved_by}} </td>
                   <td> {{$history->description}} </td>
-                  <td> {{$history->debit}} </td>
-                  <td> {{$history->credit}} </td>
+                  <td> @money($history->debit) </td>
+                  <td> @money($history->credit) </td>
                   <td> {{$history->created_at->format('d/m/Y H:i:s')}} </td>
                   <td> {{$history->updated_at->format('d/m/Y H:i:s')}} </td>
        

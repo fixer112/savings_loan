@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use  Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Auth;
@@ -25,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
         $nobs = ["01","02"];
         $data =['carbon'=>$carbon, 'His'=>$His, 'branch'=>$branch,'nobs'=>$nobs];
         view()->share ('data', $data); 
+
+        Blade::directive('money', function($amount){
+            return "<?php echo '₦'. number_format($amount,2);?>";
+        });
     }
 
     /**

@@ -61,6 +61,8 @@ Route::get('admin/searchstaff', function () {
     return redirect('/');
 }
 });
+Route::get('delete/{user}', 'AdminController@delete');
+Route::post('role/{user}', 'AdminController@role');
 Route::any('admin/search', 'AdminController@search');
 Route::post('admin/searchstaff', 'AdminController@searchstaff');
 Route::get('admin/changepass', 'AdminController@changepass');

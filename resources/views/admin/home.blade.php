@@ -158,8 +158,8 @@ HONEYPAYS | {{ Auth::user()->name }}
                   <td> {{$approve->type}} </td>
                   <td> {{$approve->recieved_by}} </td>
                   <td> {{$approve->description}} </td>
-                  <td> {{$approve->debit}} </td>
-                  <td> {{$approve->credit}} </td>
+                  <td> @money($approve->debit) </td>
+                  <td> @money($approve->credit) </td>
                   @if($approve->type == 'loan' && isset($loan) && $loan->veri_remark !='pending')
                   <td>{{$week_due_date->diffInWeeks($due_date, false) >= 0 ? $week_due_date->diffInWeeks($now, false) + $skip_due : '-'}}</td>
                   @else
@@ -217,8 +217,8 @@ HONEYPAYS | {{ Auth::user()->name }}
                   <td> {{$pending->type}} </td>
                   <td> {{$pending->recieved_by}} </td>
                   <td> {{$pending->description}} </td>
-                  <td> {{$pending->debit}} </td>
-                  <td> {{$pending->credit}} </td>
+                  <td> @money($pending->debit) </td>
+                  <td> @money($pending->credit) </td>
                   <td> {{$pending->created_at->format('d/m/Y')}} </td>
                   <td><button class="btn btn-success"><i class="fa fa-eye"></i><a href="/admin/aprove/{{$pending->id}}">Approve</a></button>
                   <button class="btn btn-danger"><i class="fa fa-edit"></i><a href="/admin/reject/{{$pending->id}}">Reject</a></button></td>
@@ -272,8 +272,8 @@ HONEYPAYS | {{ Auth::user()->name }}
                   <td> {{$reject->type}} </td>
                   <td> {{$reject->recieved_by}} </td>
                   <td> {{$reject->description}} </td>
-                  <td> {{$reject->debit}} </td>
-                  <td> {{$reject->credit}} </td>
+                  <td> @money($reject->debit) </td>
+                  <td> @money($reject->credit) </td>
                   <td> {{$reject->created_at->format('d/m/Y')}} </td>
                   <td> {{$reject->updated_at->format('d/m/Y')}} </td>
        

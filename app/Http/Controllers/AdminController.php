@@ -21,6 +21,7 @@ class AdminController extends Controller
         $this->middleware('super')->only('approve', 'reject');
     }
 
+
     public function index(Request $request){
 
             //$latest_loan = Auth::user()->loan()->latest()->first();
@@ -149,7 +150,7 @@ class AdminController extends Controller
         return redirect('admin/newcustomer');
 
 
-
+ 
     }
 
     public function newtran(){
@@ -164,7 +165,11 @@ class AdminController extends Controller
     	$history = History::where('id', '=', $pendingid)->first();
     	$user = /*$history->user()->first();*/ User::where('id', '=', $history->user_id)->first();
     	$loan = $user->loan()->where('veri_remark','=','pending')->orderby('updated_at','desc')->first();
+        $latest_loan = $user->loan()->latest()->first();
         $now = Carbon::now();
+
+        $subject = 'Transaction Alert';
+        $username = $user->username;
 
     	if ($history && $history->approved == 'pending') {
 
@@ -184,8 +189,11 @@ class AdminController extends Controller
 		    	$savings_balance = $this->naira($user->savings_balance);
 		    	$loan_balance = $this->naira($user->loan_balance);
 
+
 		//Alert User by sms
 		$message = 'Acct: '.$user->username.' Transaction Type: '.$history->description.' Transaction Amt: '.$debit.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
+
+        $this->app($subject,$message,$username);
 
 		$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
@@ -201,8 +209,8 @@ class AdminController extends Controller
     					$balance = $user->savings_balance + $remain;
     					$user->update(['savings_balance' => $balance]);
     					//update loan verify
-    					if ($loan) {
-    						$loan->update(['veri_remark' => 'Approved']);
+    					if ($latest_loan->veri_remark == 'Not Approved') {
+    						$latest_loan->update(['veri_remark' => 'Approved']);
     					}
                         //
                         
@@ -222,6 +230,8 @@ class AdminController extends Controller
 				//Alert User by SMS
 				$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Your loan have been fully paid. Transaction Type: '.$history->description.' Transaction Amt: '.$credit.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
 
+                $this->app($subject,$message,$username);
+
 	    		$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
 
@@ -236,6 +246,7 @@ class AdminController extends Controller
 
     			$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Loan partly paid. Transaction Type: '.$history->description.' Transaction Amt: '.$credit.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
 
+                        $this->app($subject,$message,$username);
     					$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
     				}elseif($user->loan_balance == 0) {
@@ -249,6 +260,7 @@ class AdminController extends Controller
 
     			$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Transaction Type: '.$history->description.' Transaction Amt: '.$credit.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
 
+                        $this->app($subject,$message,$username);
     					$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
     				}
 
@@ -273,7 +285,7 @@ class AdminController extends Controller
                         $savings_balance = $this->naira($user->savings_balance);
 
                         $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Amount of N2000.00 has been deducted from your savings balance has account open fee, your new balance is '.$savings_balance;
-                        
+                        $this->app($subject,$message,$username);
                         $this->sms($to, urlencode($message));
                         }
 
@@ -293,7 +305,7 @@ class AdminController extends Controller
 		    	$loan_balance = $this->naira($user->loan_balance);
 
     		$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Loan Application Approved Transaction Type: '.$history->description.' Transaction Amt: '.$debit.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
-
+                $this->app($subject,$message,$username);
     			$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
     		$request->session()->flash('success', $history->type.' successfully applied for '.$user->username);
@@ -324,6 +336,7 @@ class AdminController extends Controller
 
     					$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: ' . $user->username . ' Transaction Type: ' . $request->input('description') . ' Transaction Amt: ' . $debit . ' Avail Savings Bal: ' . $savings_balance . ' Loan Bal: ' . $loan_balance . ' HoneyPays | TrulyPays';
 
+                        $this->app($subject,$message,$username);
     					$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
 
@@ -350,6 +363,7 @@ class AdminController extends Controller
 
     					$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: ' . $user->username . ' Transaction Type: ' . $request->input('description') . ' Transaction Amt: ' . $debit . ' Avail Savings Bal: ' . $savings_balance . ' Loan Bal: ' . $loan_balance . ' HoneyPays | TrulyPays';
 
+                        $this->app($subject,$message,$username);
     					$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
 
@@ -431,7 +445,8 @@ class AdminController extends Controller
     			$pending = $user->history()->where('approved','=','pending')->orderby('updated_at','desc')->first();
     			$latest_loan = $user->loan()->latest()->first();
                 $now = Carbon::now();
-
+                $subject = 'Transaction Alert';
+                $username = $user->username;
     			
 		    	$to = $user->number;
 		    	setlocale(LC_MONETARY, 'en_NG');
@@ -471,6 +486,7 @@ class AdminController extends Controller
 			    		//Alert User by sms
 			    		$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Transaction Type: '.$request->input('description').' Transaction Amt: '.$amount.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
 
+                        $this->app($subject,$message,$username);
 			    		$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 			    		
     					return back();
@@ -512,8 +528,8 @@ class AdminController extends Controller
     					$balance = $user->savings_balance + $remain;
     					$user->update(['savings_balance' => $balance]);
     					//update loan verify
-    					if ($loan) {
-    						$loan->update(['veri_remark' => 'Approved']);
+    					if ($latest_loan->veri_remark == 'Not Approved') {
+    						$latest_loan->update(['veri_remark' => 'Approved']);
     					}
 
 
@@ -527,6 +543,7 @@ class AdminController extends Controller
     					//Alert User by SMS
     					$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Your loan have been fully paid. Transaction Type: '.$request->input('description').' Transaction Amt: '.$amount.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
 
+                        $this->app($subject,$message,$username);
 			    		$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
     				}elseif ($user->loan_balance > $request->input('amount')) {
@@ -540,6 +557,7 @@ class AdminController extends Controller
 
     					$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Loan partly paid. Transaction Type: '.$request->input('description').' Transaction Amt: '.$amount.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
 
+                        $this->app($subject,$message,$username);
     					$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
 
@@ -554,6 +572,7 @@ class AdminController extends Controller
 
     					$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Transaction Type: '.$request->input('description').' Transaction Amt: '.$amount.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
 
+                        $this->app($subject,$message,$username);
     					$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
     				}
 
@@ -577,7 +596,8 @@ class AdminController extends Controller
                         $savings_balance = $this->naira($user->savings_balance);
 
                         $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Amount of N2000.00 has been deducted from your savings balance has account open fee, your new balance is '.$savings_balance;
-                        
+
+                        $this->app($subject,$message,$username);
                         $this->sms($to, urlencode($message));
                         }
 			        $request->session()->flash('success', $request->input('type').' successfully applied for '.$request->input('username'));
@@ -634,6 +654,7 @@ class AdminController extends Controller
 
     					$message = 'NOTIFICATIOjnN ' .Carbon::now(). ' Acct: ' . $user->username . ' Loan Application Approved Transaction Type: ' . $request->input('description') . ' Transaction Amt: ' . $loan_amount . ' Avail Savings Bal: ' . $savings_balance . ' Loan Bal: ' . $loan_balance . ' HoneyPays | TrulyPays';
 
+                        $this->app($subject,$message,$username);
     					$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
 
@@ -675,6 +696,7 @@ class AdminController extends Controller
 
                         $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: ' . $user->username . ' Loan Application Approved Transaction Type: ' . $request->input('description') . ' Transaction Amt: ' . $loan_amount . ' Avail Savings Bal: ' . $savings_balance . ' Loan Bal: ' . $loan_balance . ' HoneyPays | TrulyPays';
 
+                        $this->app($subject,$message,$username);
                         $request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
 
@@ -726,6 +748,8 @@ class AdminController extends Controller
 
     					$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: ' . $user->username . ' Transaction Type: ' . $request->input('description') . ' Transaction Amt: ' . $amount . ' Avail Savings Bal: ' . $savings_balance . ' Loan Bal: ' . $loan_balance . ' HoneyPays | TrulyPays';
 
+
+                        $this->app($subject,$message,$username);
     					$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
 
@@ -777,6 +801,7 @@ class AdminController extends Controller
 
     					$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: ' . $user->username . ' Transaction Type: ' . $request->input('description') . ' Transaction Amt: ' . $amount . ' Avail Savings Bal: ' . $savings_balance . ' Loan Bal: ' . $loan_balance . ' HoneyPays | TrulyPays';
 
+                        $this->app($subject,$message,$username);
     					$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
 
@@ -1265,6 +1290,26 @@ public function createadmin2(Request $request){
 
             
     }
+
+     public function delete(Request $request, User $user){
+        $user->delete();
+        $request->session()->flash('success', 'User Deleted successfully '.$user->name);
+        return back();
+
+     }
+
+      public function role(Request $request, User $user){
+         $this->validate($request, [
+
+        'role' => 'required|in:admin,admin2,staff,customer',
+
+            ]);
+         $role = $user->role;
+        $user->update(['role'=> $request->role]);
+        $request->session()->flash('success', $user->name.' role changed successfully to '.$user->role .' from '.$role);
+        return back();
+
+     }
 
 	/*public function send(){
 		return $this->sms('2348106813749', urlencode('This is a test'));

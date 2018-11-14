@@ -93,8 +93,11 @@ class VerifyController extends Controller
 
     		$to = $user->number;
     		$reason = $request->reason;
-
+            $subject = 'Loan Application Rejected';
+            $username = $user->username;
         $message = 'We are sorry to inform you that your application for loan was rejected. Reason: '.$reason;
+
+        $this->app($subject,$message,$username);
 
         $request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
@@ -120,9 +123,13 @@ class VerifyController extends Controller
     		$user = $verify->user()->first();
 
     		$to = $user->number;
+            $subject = 'Loan Application Approved';
+            $username = $user->username;
     		
 
         $message = 'We are happy to inform you that your application for loan was approved. Loan will be granted by: '.$due->format('l jS F Y');
+
+        $this->app($subject,$message,$username);
 
         $request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 

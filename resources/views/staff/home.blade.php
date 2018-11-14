@@ -107,8 +107,8 @@ HONEYPAY | {{ Auth::user()->name }}
                   <td> {{$approve->type}} </td>
                   <td> {{$approve->recieved_by}} </td>
                   <td> {{$approve->description}} </td>
-                  <td> {{$approve->debit}} </td>
-                  <td> {{$approve->credit}} </td>
+                  <td> @money($approve->debit) </td>
+                  <td> @money($approve->credit) </td>
                   <td> {{$approve->created_at->format('d/m/Y H:i:s')}} </td>
                   <td> {{$approve->updated_at->format('d/m/Y H:i:s')}} </td>
        
@@ -157,8 +157,8 @@ HONEYPAY | {{ Auth::user()->name }}
                   <td> {{$pending->type}} </td>
                   <td> {{$pending->recieved_by}} </td>
                   <td> {{$pending->description}} </td>
-                  <td> {{$pending->debit}} </td>
-                  <td> {{$pending->credit}} </td>
+                  <td> @money($pending->debit) </td>
+                  <td> @money($pending->credit) </td>
                   <td> {{$pending->created_at->format('d/m/Y H:i:s')}} </td>
                   
        
@@ -207,8 +207,8 @@ HONEYPAY | {{ Auth::user()->name }}
                   <td> {{$reject->type}} </td>
                   <td> {{$reject->recieved_by}} </td>
                   <td> {{$reject->description}} </td>
-                  <td> {{$reject->debit}} </td>
-                  <td> {{$reject->credit}} </td>
+                  <td> @money($reject->debit) </td>
+                  <td> @money($reject->credit) </td>
                   <td> {{$reject->created_at->format('d/m/Y H:i:s')}} </td>
                   <td> {{$reject->updated_at->format('d/m/Y H:i:s')}} </td>
        
