@@ -11,6 +11,7 @@ use App\Loan;
 use App\Verify;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Log;
 
 class Admin2Controller extends Controller
 {
@@ -252,7 +253,7 @@ class Admin2Controller extends Controller
 			    		//Alert User by sms
 			    		$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Transaction Type: '.$request->input('description').' Transaction Amt: '.$amount.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
 
-                        $this->app($subject,$message,$username);
+                         Log::info($this->app($subject,$message,$username));
 			    		$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 			    		
     					return redirect('admin2/transaction');
@@ -307,7 +308,7 @@ class Admin2Controller extends Controller
     					//Alert User by SMS
     					$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Your loan have been fully paid. Transaction Type: '.$request->input('description').' Transaction Amt: '.$amount.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
 
-                        $this->app($subject,$message,$username);
+                         Log::info($this->app($subject,$message,$username));
 			    		$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
     				}elseif ($user->loan_balance > $request->input('amount')) {
@@ -321,7 +322,7 @@ class Admin2Controller extends Controller
 
     					$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Loan partly paid. Transaction Type: '.$request->input('description').' Transaction Amt: '.$amount.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
 
-                        $this->app($subject,$message,$username);
+                         Log::info($this->app($subject,$message,$username));
     					$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
 
@@ -336,7 +337,7 @@ class Admin2Controller extends Controller
 
     					$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Transaction Type: '.$request->input('description').' Transaction Amt: '.$amount.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
 
-                        $this->app($subject,$message,$username);
+                         Log::info($this->app($subject,$message,$username));
     					$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
     				}
 
@@ -361,8 +362,8 @@ class Admin2Controller extends Controller
 
                         $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Amount of N2000.00 has been deducted from your savings balance has account open fee, your new balance is '.$savings_balance;
 
-                        $this->app($subject,$message,$username);
-                        $this->sms($to, urlencode($message));
+                         Log::info($this->app($subject,$message,$username));
+                         Log::info($this->sms($to, urlencode($message)));
                         }
 			        $request->session()->flash('success', $request->input('type').' successfully applied for '.$request->input('username'));
 			        //return $pending."</br>".$loan;
@@ -418,7 +419,7 @@ class Admin2Controller extends Controller
 
     					$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: ' . $user->username . ' Loan Application Approved Transaction Type: ' . $request->input('description') . ' Transaction Amt: ' . $loan_amount . ' Avail Savings Bal: ' . $savings_balance . ' Loan Bal: ' . $loan_balance . ' HoneyPays | TrulyPays';
 
-                        $this->app($subject,$message,$username);
+                         Log::info($this->app($subject,$message,$username));
     					$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
 
@@ -460,7 +461,7 @@ class Admin2Controller extends Controller
 
                         $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: ' . $user->username . ' Loan Application Approved Transaction Type: ' . $request->input('description') . ' Transaction Amt: ' . $loan_amount . ' Avail Savings Bal: ' . $savings_balance . ' Loan Bal: ' . $loan_balance . ' HoneyPays | TrulyPays';
 
-                        $this->app($subject,$message,$username);
+                         Log::info($this->app($subject,$message,$username));
                         $request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
 
@@ -512,7 +513,7 @@ class Admin2Controller extends Controller
 
     					$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: ' . $user->username . ' Transaction Type: ' . $request->input('description') . ' Transaction Amt: ' . $amount . ' Avail Savings Bal: ' . $savings_balance . ' Loan Bal: ' . $loan_balance . ' HoneyPays | TrulyPays';
 
-                        $this->app($subject,$message,$username);
+                         Log::info($this->app($subject,$message,$username));
     					$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
 
@@ -564,7 +565,7 @@ class Admin2Controller extends Controller
 
     					$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: ' . $user->username . ' Transaction Type: ' . $request->input('description') . ' Transaction Amt: ' . $amount . ' Avail Savings Bal: ' . $savings_balance . ' Loan Bal: ' . $loan_balance . ' HoneyPays | TrulyPays';
 
-                        $this->app($subject,$message,$username);
+                         Log::info($this->app($subject,$message,$username));
     					$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
 

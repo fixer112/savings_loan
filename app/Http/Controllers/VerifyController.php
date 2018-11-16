@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Verify;
 use App\User;
 use Carbon\Carbon;
+use Log;
 
 class VerifyController extends Controller
 {
@@ -97,7 +98,7 @@ class VerifyController extends Controller
             $username = $user->username;
         $message = 'We are sorry to inform you that your application for loan was rejected. Reason: '.$reason;
 
-        $this->app($subject,$message,$username);
+         Log::info($this->app($subject,$message,$username));
 
         $request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
@@ -129,7 +130,7 @@ class VerifyController extends Controller
 
         $message = 'We are happy to inform you that your application for loan was approved. Loan will be granted by: '.$due->format('l jS F Y');
 
-        $this->app($subject,$message,$username);
+         Log::info($this->app($subject,$message,$username));
 
         $request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
