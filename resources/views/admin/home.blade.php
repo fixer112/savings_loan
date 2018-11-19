@@ -1,8 +1,9 @@
 @extends('layouts.app')
 @php
+ini_set('zlib.output_compression', 'Off');
+ob_start();
 $loan_count = 0;
 $due_count = 0;
-ob_start();
 @endphp
 
 @section('css')
