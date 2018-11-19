@@ -1,4 +1,4 @@
-vendor/
+/vendor/
 .phpintel/
 node_modules/
 npm-debug.log
@@ -9,10 +9,11 @@ bootstrap/compiled.php
 app/storage/
 
 # Laravel 5 & Lumen specific
-public/storage
-public/hot
-public/images
+/public/storage/
+/public/hot/
+/public/images/
 storage/*.key
+/storage/logs/
 .env.*.php
 .env.php
 .env
