@@ -23,7 +23,12 @@ class AppServiceProvider extends ServiceProvider
         $carbon = new Carbon;
         $His = new History;
         $branch = new User;
-        $nobs = ["01","02"];
+        $nobs = [];
+        for ($i = 1; $i <=9 ; $i++) {
+            $value = $i < 10 ? "0".$i : $i;
+            array_push($nobs, $value);
+        }
+        //$nobs = ["01","02","03"];
         $data =['carbon'=>$carbon, 'His'=>$His, 'branch'=>$branch,'nobs'=>$nobs];
         view()->share ('data', $data); 
 
