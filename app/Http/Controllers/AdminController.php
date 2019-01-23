@@ -385,10 +385,17 @@ class AdminController extends Controller
     	$history = History::where('id', '=', $pendingid)->first();
     	$user = /*$history->user()->first();*/ User::where('id', '=', $history->user_id)->first();
     	$loan = $user->loan()->where('veri_remark','=','pending')->orderby('updated_at','desc')->first();
+        $username = $user->username;
+        $subject = "Transaction rejected";
 
     	if ($history && $history->approved == 'pending') {
 
     		$history->update(['approved' => 'no']);
+
+        $message = 'We are sorry to inform you that transaction'.$history->id.'  was rejected on ' .Carbon::now();
+
+         Log::info($this->app($subject,$message,$username));
+        $request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
     	$request->session()->flash('success', 'Transaction rejected successfully');
 		return back();
