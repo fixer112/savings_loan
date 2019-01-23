@@ -387,6 +387,7 @@ class AdminController extends Controller
     	$loan = $user->loan()->where('veri_remark','=','pending')->orderby('updated_at','desc')->first();
         $username = $user->username;
         $subject = "Transaction rejected";
+        $to = $user->number;
 
     	if ($history && $history->approved == 'pending') {
 
