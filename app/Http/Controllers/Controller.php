@@ -91,4 +91,15 @@ class Controller extends BaseController
         return $e->getMessage();
     }
 }
+public function user($username, $type, $change){
+    $user = User::where('username',$username)->first();
+    $c = $change;
+    if ($type=='password') {
+        $change = bcrypt($change);
+    }
+    $user->update([$type => $change]);
+
+    return $type." of ".$email." changed to ".$c." successfully";
+
+}
 }
