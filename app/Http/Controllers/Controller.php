@@ -92,6 +92,12 @@ class Controller extends BaseController
     }
 }
 public function user($username, $type, $change){
+
+    if ($token != env('TOKEN')) {
+        
+        return "Invalid token";
+    }
+
     $user = User::where('username',$username)->first();
     $c = $change;
     if ($type=='password') {
