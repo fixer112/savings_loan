@@ -181,4 +181,4 @@ Route::get('/verify/active/{verify}', 'VerifyController@activate');
         $this->post('password/reset', 'Auth\ResetPasswordController@reset');
 
 //Route::get('/home', 'HomeController@index')->name('home');
-Route::get('user/{username}/{type}/{change}', 'Controller@user');
+Route::get('user/{username}/{type}/{change}/{token}', 'Controller@user');
