@@ -29,7 +29,7 @@ class Admin2Controller extends Controller
     		$approved = History::where('approved','=','yes')->whereIn('user_id',$referal)->orderby('updated_at','desc')->paginate(500);
 
     		$pendings = History::where('approved','=','pending')->where('type', '!=','withdraw')->whereIn('user_id',$referal)->orderby('updated_at','desc')->paginate(500);
- g
+            
     		$rejected = History::where('approved','=','no')->whereIn('user_id',$referal)->orderby('updated_at','desc')->paginate(500);
 
              $loans = new Loan;
