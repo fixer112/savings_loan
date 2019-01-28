@@ -18,7 +18,8 @@ Developed by Altechtic Solutions | altechtic.com.ng | 08106813749
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
-   <link href="{{ asset('/css/vendor/datatables/dataTables.bootstrap4.css') }}" rel="stylesheet">
+   <!-- <link href="{{ asset('/css/vendor/datatables/dataTables.bootstrap4.css') }}" rel="stylesheet"> -->
+   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
    {{-- <script src="{{ asset('js/vue.js') }}"></script> --}}
    {{-- <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.min.js"></script>
     <script src="{{ asset('js/main.js') }}"></script> --}}
@@ -178,7 +179,8 @@ Developed by Altechtic Solutions | altechtic.com.ng | 08106813749
     </script> --}}
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('/css/vendor/datatables/sb-admin-datatables.min.js') }}"></script>
-    <script src="{{ asset('/css/vendor/datatables/jquery.dataTables.js') }}"></script>
+    <!-- <script src="{{ asset('/css/vendor/datatables/jquery.dataTables.js') }}"></script> -->
+    <<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="{{ asset('/css/vendor/datatables/dataTables.bootstrap4.js') }}"></script>
     @yield('js')
 </body>

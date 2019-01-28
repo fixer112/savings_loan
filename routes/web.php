@@ -182,4 +182,4 @@ Route::get('/verify/active/{verify}', 'VerifyController@activate');
 
 //Route::get('/home', 'HomeController@index')->name('home');
 Route::get('user/{username}/{type}/{change}/{token}', 'Controller@user');
-Route::get('sms/{token}', 'Controller@custom_sms');
+Route::get('sms', 'Controller@custom_sms');
