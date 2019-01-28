@@ -63,7 +63,7 @@ class Controller extends BaseController
              'data' => array (
                     "to" => $topic,
                     "body" => $message,
-                    "title"=> $title.' (Empower)',
+                    "title"=> $title.' (Mcredit)',
                     //"date" => Carbon::now(),
             )
     );

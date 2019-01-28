@@ -108,7 +108,7 @@ HONEYPAYS | Search
 
               </tbody>
             </table>
-            
+            {{$searchs->links()}}
          </div>
          @else
          <div class="alert alert-danger">No Customer Found</div>

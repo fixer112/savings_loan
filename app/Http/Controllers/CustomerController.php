@@ -35,7 +35,7 @@ class CustomerController extends Controller
         }
 
         $loan = Auth::user()->loan()->orderby('updated_at','desc')->first();
-        $historys = Auth::user()->history()->where('approved','=','yes')->orderby('updated_at','desc')->take(5000)->get();
+        $historys = Auth::user()->history()->where('approved','=','yes')->orderby('updated_at','desc')->paginate(500);
         $pending = Auth::user()->history()->orderby('updated_at','desc')->first();
         $loanveri = Auth::user()->loan()->where('veri_remark','=','Not Approved')->orderby('updated_at','desc')->first();
         $transveri = Auth::user()->history()->where('approved','=','pending')->orderby('updated_at','desc')->first();
@@ -52,7 +52,7 @@ class CustomerController extends Controller
           $due = $week_due_date->diffInWeeks($due_date, false) >= 0 ? $week_due_date->diffInWeeks($now, false) + $skip_due : '0';
           }
 
-           $data = ['loan' => $loan, 'historys' => User::find(4)->history()->where('approved','=','yes')->orderby('updated_at','desc')->take(50)->get(), 'pending' => $pending, 'loanveri' => $loanveri, 'transveri' => $transveri, 'latest_loan' => $latest_loan, 'now' => $now, 'user'=> Auth::user(), 'due' => isset($due) ? $due: null, ];
+           $data = ['loan' => $loan, 'historys' => User::find(4)->history()->where('approved','=','yes')->orderby('updated_at','desc')->paginate(500), 'pending' => $pending, 'loanveri' => $loanveri, 'transveri' => $transveri, 'latest_loan' => $latest_loan, 'now' => $now, 'user'=> Auth::user(), 'due' => isset($due) ? $due: null, ];
 
            return \Response::json($data);
        }

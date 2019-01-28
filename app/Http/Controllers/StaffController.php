@@ -24,11 +24,11 @@ class StaffController extends Controller
     	
     		$id = Auth::user()->id;
 
-    		$approved = History::where('staff_id','=',$id)->where('approved','=','yes')->orderby('updated_at','desc')->take(5000)->get();
+    		$approved = History::where('staff_id','=',$id)->where('approved','=','yes')->orderby('updated_at','desc')->paginate(500);
 
-    		$pendings = History::where('staff_id','=',$id)->where('approved','=','pending')->orderby('updated_at','desc')->take(5000)->get();
+    		$pendings = History::where('staff_id','=',$id)->where('approved','=','pending')->orderby('updated_at','desc')->paginate(500);
 
-    		$rejected = History::where('staff_id','=',$id)->where('approved','=','no')->orderby('updated_at','desc')->take(5000)->get();
+    		$rejected = History::where('staff_id','=',$id)->where('approved','=','no')->orderby('updated_at','desc')->paginate(500);
 
     		$customer = new User;
     		
@@ -433,7 +433,7 @@ class StaffController extends Controller
 
     //$keyword = $request->input('search');
 
-    $searchs = User::where('role', '=', 'customer')->where('referal','=', Auth::user()->mentor)->get();
+    $searchs = User::where('role', '=', 'customer')->where('referal','=', Auth::user()->mentor)->paginate(500);
 
     /*User::where(function ($query) use ($keyword) {
             $query->where('role', '=', 'customer')->where('suspend', '=', 'no');
@@ -442,7 +442,7 @@ class StaffController extends Controller
         //->orWhere('email', 'LIKE', '%'.$keyword.'%')
         ->orWhere('number', 'LIKE', '%'.$keyword.'%');
 
-        })->get();*/
+        })->paginate(500);*/
 
     //$request->session()->put('search', $keyword);
     
@@ -459,8 +459,8 @@ class StaffController extends Controller
                 }
     	if (Auth::check() && Auth::user()->role == 'staff' && $user) {
     		$loan = $user->loan()->orderby('updated_at','desc')->first();
-    		$historys = $user->history()->where('approved','=','yes')->orderby('updated_at','desc')->take(5000)->get();
-    		$rejected = $user->history()->where('approved','=','no')->orderby('updated_at','desc')->take(5000)->get();
+    		$historys = $user->history()->where('approved','=','yes')->orderby('updated_at','desc')->paginate(500);
+    		$rejected = $user->history()->where('approved','=','no')->orderby('updated_at','desc')->paginate(500);
             $latest_loan = $user->loan()->latest()->first();
             $now = Carbon::now();
 

@@ -211,7 +211,7 @@ $id = Auth::user()->id;
 
               </tbody>
             </table>
-            
+            {{$historys->links()}}
          </div>
         
         @else

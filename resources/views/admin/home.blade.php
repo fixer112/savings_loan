@@ -99,13 +99,13 @@ HONEYPAYS | {{ Auth::user()->name }}
 
             <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item">
-    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#approved" role="tab" aria-controls="approved" aria-selected="true"><b style="color: green">{{$approved->count()}} Approved</b></a>
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#approved" role="tab" aria-controls="approved" aria-selected="true"><b style="color: green">{{$approved->total()}} Approved</b></a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="pending-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="false"><b style="color: blue">{{$pendings->count()}} Pending </b></a>
+    <a class="nav-link" id="pending-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="false"><b style="color: blue">{{$pendings->total()}} Pending </b></a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="rejected-tab" data-toggle="tab" href="#rejected" role="tab" aria-controls="rejected" aria-selected="false"><b style="color: red">{{$rejected->count()}} Rejected </b></a>
+    <a class="nav-link" id="rejected-tab" data-toggle="tab" href="#rejected" role="tab" aria-controls="rejected" aria-selected="false"><b style="color: red">{{$rejected->total()}} Rejected </b></a>
   </li>
   <li class="nav-item">
     <a class="nav-link" id="due-tab" data-toggle="tab" href="#due" role="tab" aria-controls="due" aria-selected="false"><b style="color: red">##loan_count## Loan Dues </b></a>
@@ -171,9 +171,9 @@ HONEYPAYS | {{ Auth::user()->name }}
        
                 </tr>
               @endforeach
-
               </tbody>
             </table>
+            {{$approved->links()}}
             
          </div>
         

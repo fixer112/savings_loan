@@ -93,10 +93,10 @@ HONEYPAYS | View Customer- {{$user->username}}
         </div>
         <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item">
-    <a class="nav-link active" id="approved-tab" data-toggle="tab" href="#approved" role="tab" aria-controls="approved" aria-selected="true"><b style="color: green">{{$historys->count()}} Approved</b></a>
+    <a class="nav-link active" id="approved-tab" data-toggle="tab" href="#approved" role="tab" aria-controls="approved" aria-selected="true"><b style="color: green">{{$historys->total()}} Approved</b></a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="rejected-tab" data-toggle="tab" href="#rejected" role="tab" aria-controls="rejected" aria-selected="false"><b style="color: red">{{$rejected->count()}} Rejected</b></a>
+    <a class="nav-link" id="rejected-tab" data-toggle="tab" href="#rejected" role="tab" aria-controls="rejected" aria-selected="false"><b style="color: red">{{$rejected->total()}} Rejected</b></a>
   </li>
 </ul>
 <div class="tab-content" id="myTabContent">
@@ -137,7 +137,7 @@ HONEYPAYS | View Customer- {{$user->username}}
 
               </tbody>
             </table>
-            
+            {{$historys->links()}}
          </div>
         
         @else
@@ -183,7 +183,7 @@ HONEYPAYS | View Customer- {{$user->username}}
 
               </tbody>
             </table>
-            
+            {{$rejecteds->links()}}
          </div>
         
         @else
