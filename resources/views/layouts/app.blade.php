@@ -26,6 +26,11 @@ Developed by Altechtic Solutions | altechtic.com.ng | 08106813749
     <style type="text/css">
         body{
             background-color: blue;
+            background: url(./images/mcredit_bg.jpg) no-repeat center center fixed;
+            background-size: cover;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
         }
         .card-header{
             color: blue;
@@ -180,7 +185,7 @@ Developed by Altechtic Solutions | altechtic.com.ng | 08106813749
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('/css/vendor/datatables/sb-admin-datatables.min.js') }}"></script>
     <!-- <script src="{{ asset('/css/vendor/datatables/jquery.dataTables.js') }}"></script> -->
-    <<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="{{ asset('/css/vendor/datatables/dataTables.bootstrap4.js') }}"></script>
     @yield('js')
 </body>
