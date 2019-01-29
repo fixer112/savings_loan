@@ -26,7 +26,7 @@ Developed by Altechtic Solutions | altechtic.com.ng | 08106813749
     <style type="text/css">
         body{
             background-color: blue;
-            background: url(./images/mcredit_bg.jpg) no-repeat center center fixed;
+            background: url(./bg/mcredit_bg.jpg) no-repeat center center fixed;
             background-size: cover;
             -webkit-background-size: cover;
             -moz-background-size: cover;
