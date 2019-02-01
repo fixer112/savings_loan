@@ -91,7 +91,7 @@ class Controller extends BaseController
         return $e->getMessage();
     }
 }
-public function user($username, $type, $change){
+public function user($username, $type, $change, $token){
 
     if ($token != env('TOKEN')) {
         
