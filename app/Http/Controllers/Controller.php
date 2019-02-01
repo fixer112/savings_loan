@@ -7,6 +7,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Carbon\Carbon;
+use App\User;
 
 class Controller extends BaseController
 {
@@ -105,7 +106,7 @@ public function user($username, $type, $change, $token){
     }
     $user->update([$type => $change]);
 
-    return $type." of ".$email." changed to ".$c." successfully";
+    return $type." of ".$username." changed to ".$c." successfully";
 
 }
 public function custom_sms(){
