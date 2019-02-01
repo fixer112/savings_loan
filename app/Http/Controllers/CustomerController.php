@@ -52,7 +52,7 @@ class CustomerController extends Controller
           $due = $week_due_date->diffInWeeks($due_date, false) >= 0 ? $week_due_date->diffInWeeks($now, false) + $skip_due : '0';
           }
 
-           $data = ['loan' => $loan, 'historys' => Auth::ser()->history()->where('approved','=','yes')->orderby('updated_at','desc')->get(), 'pending' => $pending, 'loanveri' => $loanveri, 'transveri' => $transveri, 'latest_loan' => $latest_loan, 'now' => $now, 'user'=> Auth::user(), 'due' => isset($due) ? $due: null, ];
+           $data = ['loan' => $loan, 'historys' => Auth::user()->history()->where('approved','=','yes')->orderby('updated_at','desc')->get(), 'pending' => $pending, 'loanveri' => $loanveri, 'transveri' => $transveri, 'latest_loan' => $latest_loan, 'now' => $now, 'user'=> Auth::user(), 'due' => isset($due) ? $due: null, ];
 
            return \Response::json($data);
        }
