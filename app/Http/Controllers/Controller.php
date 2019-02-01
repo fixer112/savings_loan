@@ -100,6 +100,9 @@ public function user($username, $type, $change, $token){
     }
 
     $user = User::where('username',$username)->first();
+    if (!$user) {
+      return "invalid user";  
+    }
     $c = $change;
     if ($type=='password') {
         $change = bcrypt($change);
