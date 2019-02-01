@@ -134,7 +134,7 @@ class StaffController extends Controller
 
          $to = $request->input('number');
 
-        $$message = 'Welcome to HONEYPAYS MICRO CREDIT INVESTMENT LIMITED, your account has successfully been created. Acct. NUmber: ' . $request->input('username') . ' Password: '.$request->input('password').' Click here to change your password mcredit.honeypays.com.ng/login';
+        $message = 'Welcome to HONEYPAYS MICRO CREDIT INVESTMENT LIMITED, your account has successfully been created. Acct. NUmber: ' . $request->input('username') . ' Password: '.$request->input('password').' Click here to change your password mcredit.honeypays.com.ng/login';
 
         $request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
