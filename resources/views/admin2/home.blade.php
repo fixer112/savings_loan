@@ -69,7 +69,7 @@ HONEYPAY | {{ Auth::user()->name }}
 <br>
             <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item">
-    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#approved" role="tab" aria-controls="approved" aria-selected="true"><b style="color: green">{{$approved->count()}} Approved </b></a>
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#approved" role="tab" aria-controls="approved" aria-selected="true"><b style="color: green">{{$approved->total()}} Approved </b></a>
   </li>
   <li class="nav-item">
     <a class="nav-link" id="pending-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="false"><b style="color: blue">{{$pendings->total()}} Pending </b></a>
@@ -92,6 +92,7 @@ HONEYPAY | {{ Auth::user()->name }}
                   <th>Customer Acc No</th>
                   <th>Transaction Type</th>
                   <th>Recieved by</th>
+                  <th>Customer Name</th>
                   <th>Transaction description</th>
                   <th>Debit</th>
                   <th>Credit</th>
@@ -123,6 +124,7 @@ HONEYPAY | {{ Auth::user()->name }}
                   <td> {{$customer_approve->username}} </td>
                   <td> {{$approve->type}} </td>
                   <td> {{$approve->recieved_by}} </td>
+                  <td> {{$customer_approve->name}} </td>
                   <td> {{$approve->description}} </td>
                   <td> @money($approve->debit) </td>
                   <td> @money($approve->credit) </td>
@@ -140,7 +142,7 @@ HONEYPAY | {{ Auth::user()->name }}
 
               </tbody>
             </table>
-            {{-- {{$approved->links()}} --}}
+            {{$approved->links()}}
          </div>
         
         @else

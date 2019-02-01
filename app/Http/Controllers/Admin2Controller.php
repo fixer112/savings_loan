@@ -26,7 +26,7 @@ class Admin2Controller extends Controller
     		$id = Auth::user()->mentor;
             $referal = User::where('referal',$id)->pluck('id');
 
-    		$approved = History::where('approved','=','yes')->whereIn('user_id',$referal)->orderby('updated_at','desc')->get();
+    		$approved = History::where('approved','=','yes')->whereIn('user_id',$referal)->orderby('updated_at','desc')->paginate(500);
 
     		$pendings = History::where('approved','=','pending')->where('type', '!=','withdraw')->whereIn('user_id',$referal)->orderby('updated_at','desc')->paginate(500);
             
