@@ -118,17 +118,18 @@ HONEYPAYS | {{ Auth::user()->name }}
             <table class="display table table-bordered" id="" width="100%" cellspacing="0">
               <thead>
                 <tr>
+                  <th>Verified Date</th>
+                  <th>Applied Date</th>
                 <th>Transaction ID</th>
                   <th>Customer Acc No</th>
                   <th>Staff Acc No</th>
                   <th>Transaction Type</th>
                   <th>Recieved by</th>
+                  <th>Customer Name</th>
                   <th>Transaction description</th>
                   <th>Debit</th>
                   <th>Credit</th>
                   <th>Week Due (##due_count##)</th>
-                  <th>Applied Date</th>
-                  <th>Verified Date</th>
                   
 
                 </tr>
@@ -153,11 +154,14 @@ HONEYPAYS | {{ Auth::user()->name }}
                 @endphp
 
                 <tr>
+                  <td> {{$approve->updated_at->format('d/m/Y H:i:s')}} </td>
+                  <td> {{$approve->created_at->format('d/m/Y H:i:s')}} </td>
                 <td> {{$approve->id}} </td>
                   <td> {{$customer_approve->username}} </td>
                   <td> {{$staff_approve ?  $staff_approve->username : 'none'}}</td>
                   <td> {{$approve->type}} </td>
                   <td> {{$approve->recieved_by}} </td>
+                  <td> {{$customer_approve->name}} </td>
                   <td> {{$approve->description}} </td>
                   <td> @money($approve->debit) </td>
                   <td> @money($approve->credit) </td>
@@ -166,8 +170,6 @@ HONEYPAYS | {{ Auth::user()->name }}
                   @else
                   <td> - </td>
                   @endif
-                  <td> {{$approve->created_at->format('d/m/Y H:i:s')}} </td>
-                  <td> {{$approve->updated_at->format('d/m/Y H:i:s')}} </td>
        
                 </tr>
               @endforeach
@@ -189,15 +191,16 @@ HONEYPAYS | {{ Auth::user()->name }}
             <table class="display table table-bordered" id="" width="100%" cellspacing="0">
               <thead>
                 <tr>
+                  <th>Applied Date</th>
                 <th>Transaction ID</th>
                   <th>Customer Acc No</th>
                   <th>Staff Acc No</th>
                   <th>Transaction Type</th>
                   <th>Recieved by</th>
+                  <th>Customer Name</th>
                   <th>Transaction description</th>
                   <th>Debit</th>
                   <th>Credit</th>
-                  <th>Applied Date</th>
                   <th>Actions</th>
                   
                   
@@ -212,15 +215,16 @@ HONEYPAYS | {{ Auth::user()->name }}
                 $staff_pending = $customer->where('id','=',$pending->staff_id)->first();
                 @endphp
                 <tr>
+                  <td> {{$pending->created_at->format('d/m/Y')}} </td>
                 <td> {{$pending->id}} </td>
                   <td> {{$customer_pending->username}} </td>
                   <td> {{$staff_pending ?  $staff_pending->username : 'none'}}</td>
                   <td> {{$pending->type}} </td>
                   <td> {{$pending->recieved_by}} </td>
+                  <td> {{$customer_pending->name}} </td>
                   <td> {{$pending->description}} </td>
                   <td> @money($pending->debit) </td>
                   <td> @money($pending->credit) </td>
-                  <td> {{$pending->created_at->format('d/m/Y')}} </td>
                   <td><button class="btn btn-success"><i class="fa fa-eye"></i><a href="/admin/aprove/{{$pending->id}}">Approve</a></button>
                   <button class="btn btn-danger"><i class="fa fa-edit"></i><a href="/admin/reject/{{$pending->id}}">Reject</a></button></td>
                   
@@ -245,16 +249,17 @@ HONEYPAYS | {{ Auth::user()->name }}
             <table class="display table table-bordered" id="" width="100%" cellspacing="0">
               <thead>
                 <tr>
+                  <th>Rejected Date</th>
+                  <th>Applied Date</th>
                 <th>Transaction ID</th>
                   <th>Customer Acc No</th>
                   <th>Staff Acc No</th>
                   <th>Transaction Type</th>
                   <th>Recieved by</th>
+                  <th>Customer Name</th>
                   <th>Transaction description</th>
                   <th>Debit</th>
                   <th>Credit</th>
-                  <th>Applied Date</th>
-                  <th>Rejected Date</th>
                   
 
                 </tr>
@@ -267,16 +272,17 @@ HONEYPAYS | {{ Auth::user()->name }}
                 $staff_reject = $customer->where('id','=',$reject->user_id)->first();
                 @endphp
                 <tr>
+                  <td> {{$reject->updated_at->format('d/m/Y')}} </td>
+                  <td> {{$reject->created_at->format('d/m/Y')}} </td>
                 <td> {{$reject->id}} </td>
                   <td> {{$customer_reject->username}} </td>
                   <td> {{$staff_reject ?  $staff_reject->username : 'none'}} </td>
                   <td> {{$reject->type}} </td>
                   <td> {{$reject->recieved_by}} </td>
+                  <td> {{$customer_reject->name}} </td>
                   <td> {{$reject->description}} </td>
                   <td> @money($reject->debit) </td>
                   <td> @money($reject->credit) </td>
-                  <td> {{$reject->created_at->format('d/m/Y')}} </td>
-                  <td> {{$reject->updated_at->format('d/m/Y')}} </td>
        
                 </tr>
               @endforeach
@@ -300,11 +306,12 @@ HONEYPAYS | {{ Auth::user()->name }}
             <table class="display table table-bordered" id="" width="100%" cellspacing="0">
               <thead>
                 <tr>
+                  <th>Approved Date</th>
                   <th>Customer Acc No</th>
+                  <th>Customer Name</th>
                   <th>Due Date</th>
                   <th>Loan Category</th>
                   <th>Actions</th>
-                  <th>Approved Date</th>
                   
 
                 </tr>
@@ -323,7 +330,9 @@ HONEYPAYS | {{ Auth::user()->name }}
                 $loan_count += 1;
                 @endphp 
                 <tr>
+                  <td> {{$due->updated_at->format('d/m/Y')}} </td>
                   <td> {{$customer_due->username}} </td>
+                  <td> {{$customer_due->name}} </td>
                   <td> {{$due->due_date}} </td>
                   <td> {{$due->loan}} </td>
                   <td> 
@@ -336,7 +345,6 @@ HONEYPAYS | {{ Auth::user()->name }}
                     <a href="/verify/active/{{$due->id}}"><button class="btn btn-primary
                     ">Activate</button></a>
                   </td>
-                  <td> {{$due->updated_at->format('d/m/Y')}} </td>
        
                 </tr>
                 @endif
