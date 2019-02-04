@@ -65,7 +65,7 @@ $id = $user->id;
                         <p>Verification remark: <strong style="color: {{ $user->kin_verify =='Approved' ? 'green' : 'red' }}" >{{ $user->kin_verify }} </strong></p>
                         </div>
                         <div class="col-md garantor1">
-                        <center><b>GARANTOR ONE</b></center>
+                        <center><b>GUARANTOR ONE</b></center>
                         </br>
                         <div class="img2">
                         <img src="/{{ $user->gara1_passport }}">
@@ -77,7 +77,7 @@ $id = $user->id;
                         <p>Verification remark: <strong style="color: {{ $user->gara1_verify =='Approved' ? 'green' : 'red' }}" >{{ $user->gara1_verify }} </strong></p>
                     </div>
                     <div class="col-md garantor2">
-                    <center><b>GARANTOR TWO</b></center>
+                    <center><b>GUARANTOR TWO</b></center>
                     </br>
                     <div class="img2">
                     <img src="/{{ $user->gara2_passport }}">
