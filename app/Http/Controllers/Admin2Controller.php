@@ -362,7 +362,7 @@ class Admin2Controller extends Controller
 
                         /*$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Amount of N2000.00 has been deducted from your savings balance has account open fee, your new balance is '.$savings_balance;*/
 
-                       $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: ' . $user->username . ' Loan Application Approved Transaction Type: Account Opening Fee Transaction Amt: ₦2000 Avail Savings Bal: ' . $savings_balance .' HoneyPays | TrulyPays';
+                       $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: ' . $user->username . ' Loan Application Approved Transaction Type: Account Opening Fee Transaction Amt: NGN 2000 Avail Savings Bal: ' . $savings_balance .' HoneyPays | TrulyPays';
 
                          Log::info($this->app($subject,$message,$username));
                          Log::info($this->sms($to, urlencode($message)));
