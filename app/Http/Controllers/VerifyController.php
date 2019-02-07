@@ -96,6 +96,9 @@ class VerifyController extends Controller
     public function reject(Request $request, Verify $verify){
 
     	if ($verify && $verify->status != 'pending') {
+            $request->session()->flash('failed', 'Verification does not exist or not pending');
+            return back();
+        }
 
     		$validate = $this->validate($request, [
     			'reason'=>'required',
@@ -106,7 +109,7 @@ class VerifyController extends Controller
     		$user = $verify->user()->first();
 
     		$to = $user->number;
-    		$reason = $request->reason;
+   		$reason = $request->reason;
             $subject = 'Loan Application Rejected';
             $username = $user->username;
         $message = 'We are sorry to inform you that your application for loan was rejected. Reason: '.$reason;
@@ -116,16 +119,16 @@ class VerifyController extends Controller
         $request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
     		$request->session()->flash('success', 'Verification rejected successfully');
-    	}else {
-    		$request->session()->flash('failed', 'Verification does not exist not pending');
-    	}
-
+    	
     	return back();
     }
 
     public function approve(Request $request, Verify $verify){
 
-    	if ($verify && $verify->status =='pending' ) {
+    	if ($verify && $verify->status !='pending' ) {
+            $request->session()->flash('failed', 'Verification does not exist or not pending');
+            return back();
+        }
     		
     		$validate = $this->validate($request, [
     			'due_date'=>'required',
@@ -148,11 +151,8 @@ class VerifyController extends Controller
         $request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
     		$request->session()->flash('success', 'Verification approved successfully');
-    	}else {
-    		$request->session()->flash('failed', 'Verification does not exist not pending');
-    	}
-
-    	return back();
+    	
+            return back();
     	}
 
         public function activate(Request $request, Verify $verify){
