@@ -91,6 +91,10 @@ HONEYPAY | {{ Auth::user()->name }}
                     ">Form2</button></a>
                     <a href="/public/{{$approve->form3}}"><button class="btn btn-primary
                     ">Form3</button></a>
+                    @if (!empty($approve->form4))
+                    <a href="/public/{{$approve->form4}}"><button class="btn btn-primary
+                    ">Form4</button></a>
+                    @endif
                   </td>
                   <td> {{$approve->created_at->format('d/m/Y H:i:s')}} </td>
                   <td> {{$approve->updated_at->format('d/m/Y H:i:s')}} </td>
@@ -141,6 +145,10 @@ HONEYPAY | {{ Auth::user()->name }}
                     ">Form2</button></a>
                     <a href="/public/{{$pending->form3}}"><button class="btn btn-primary
                     ">Form3</button></a>
+                     @if (!empty($pending->form4))
+                    <a href="/public/{{$pending->form4}}"><button class="btn btn-primary
+                    ">Form4</button></a>
+                    @endif
                     @if(Auth::user()->role == 'admin')
                     <a href="#approve" aria-expanded="false" data-toggle="modal"><button onclick="actionapprove(document.getElementById('formapprove'), {{$pending->id}});" class="btn btn-success
                     ">Approve</button></a>
@@ -198,6 +206,10 @@ HONEYPAY | {{ Auth::user()->name }}
                     ">Form2</button></a>
                     <a href="/public/{{$reject->form3}}"><button class="btn btn-primary
                     ">Form3</button></a>
+                     @if (!empty($reject->form4))
+                    <a href="/public/{{$reject->form4}}"><button class="btn btn-primary
+                    ">Form4</button></a>
+                    @endif
                   </td>
                   <td> {{$reject->created_at->format('d/m/Y H:i:s')}} </td>
                   <td> {{$reject->updated_at->format('d/m/Y H:i:s')}} </td>

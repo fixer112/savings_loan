@@ -149,7 +149,7 @@ $id = Auth::user()->id;
                         </div>
 
 
-                        <div class="form-group{{ $errors->has('new_password') ? ' has-error' : '' }}">
+                     <div class="form-group{{ $errors->has('new_password') ? ' has-error' : '' }}">
                             <div class="col-md-6">
                                 <input id="password_confirmation" type="password" class="form-control" name="new_password" placeholder="New Password" required>
 

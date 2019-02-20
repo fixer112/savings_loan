@@ -42,7 +42,7 @@ class Controller extends BaseController
     }
 
     public function naira($number){
-    return "₦". number_format($number, 2);
+    return "NGN ". number_format($number, 2);
 
     }
 

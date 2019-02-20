@@ -22,6 +22,7 @@ class Verify extends Migration
             $table->string('form1');
             $table->string('form2');
             $table->string('form3');
+             $table->string('form4')->nullable();
             $table->string('reason')->nullable();
             $table->string('staff_id');
             $table->string('user_id');

@@ -34,6 +34,7 @@ class VerifyController extends Controller
 	        'form1' => 'required|image|max:200',
 	        'form2' => 'required|image|max:200',
 	        'form3' => 'required|image|max:200',
+            'form4' => 'image|max:200',
 	        ]);
 
 	        $destination = public_path('/verify');
@@ -47,11 +48,12 @@ class VerifyController extends Controller
     		$form3 = $request->file('form3');
     		$form3name = "form3-".$this->randomstring(4).time().$user->id.".".$form3->getClientOriginalExtension();
 
+           
     		$form1->move($destination, $form1name);
     		$form2->move($destination, $form2name);
     		$form3->move($destination, $form3name);
 
-    		Verify::create([
+    		$verify = Verify::create([
     			'loan' => $request->loan,
     			'staff_id' => Auth::user()->username,
     			'user_id' => $user->id,
@@ -60,6 +62,17 @@ class VerifyController extends Controller
     			'form3' => 'verify/'.$form3name,
 
     		]);
+
+            if ($request->file('form4')) {
+
+                $form4 = $request->file('form4');
+                $form4name = "form4-".$this->randomstring(4).time().$user->id.".".$form4->getClientOriginalExtension();
+
+                $form4->move($destination, $form4name);
+
+                $verify->update(['form4'=> 'verify/'.$form4name]);
+            }
+
     		$request->session()->flash('success', 'Verification added successfully');
     		
     		
@@ -83,6 +96,9 @@ class VerifyController extends Controller
     public function reject(Request $request, Verify $verify){
 
     	if ($verify && $verify->status != 'pending') {
+            $request->session()->flash('failed', 'Verification does not exist or not pending');
+            return back();
+        }
 
     		$validate = $this->validate($request, [
     			'reason'=>'required',
@@ -93,7 +109,7 @@ class VerifyController extends Controller
     		$user = $verify->user()->first();
 
     		$to = $user->number;
-    		$reason = $request->reason;
+   		$reason = $request->reason;
             $subject = 'Loan Application Rejected';
             $username = $user->username;
         $message = 'We are sorry to inform you that your application for loan was rejected. Reason: '.$reason;
@@ -103,16 +119,16 @@ class VerifyController extends Controller
         $request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
     		$request->session()->flash('success', 'Verification rejected successfully');
-    	}else {
-    		$request->session()->flash('failed', 'Verification does not exist not pending');
-    	}
-
+    	
     	return back();
     }
 
     public function approve(Request $request, Verify $verify){
 
-    	if ($verify && $verify->status =='pending' ) {
+    	if ($verify && $verify->status !='pending' ) {
+            $request->session()->flash('failed', 'Verification does not exist or not pending');
+            return back();
+        }
     		
     		$validate = $this->validate($request, [
     			'due_date'=>'required',
@@ -135,11 +151,8 @@ class VerifyController extends Controller
         $request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
     		$request->session()->flash('success', 'Verification approved successfully');
-    	}else {
-    		$request->session()->flash('failed', 'Verification does not exist not pending');
-    	}
-
-    	return back();
+    	
+            return back();
     	}
 
         public function activate(Request $request, Verify $verify){

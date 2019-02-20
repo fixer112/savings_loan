@@ -159,7 +159,7 @@ HONEYPAYS | View Customer- {{$user->username}}
 
               </tbody>
             </table>
-            {{$history->links()}}
+            {{$historys->links()}}
          </div>
         
         @else
@@ -205,7 +205,7 @@ HONEYPAYS | View Customer- {{$user->username}}
 
               </tbody>
             </table>
-            {{$reject->links()}}
+            {{$rejected->links()}}
          </div>
         
         @else

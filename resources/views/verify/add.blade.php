@@ -142,6 +142,20 @@ HONEYPAYS | Add Verification
                             </div>
                         </div>
 
+                        <div class="form-group{{ $errors->has('form4') ? ' has-error' : '' }}">
+                            <label for="form4" class="col-md-4 control-label">Form4</label>
+
+                        <div class="col-md-6">
+                                <input id="form4" type="file" class="form-control" name="form4" accept="image/*" value="{{ old('form3') }}">
+
+                                @if ($errors->has('form4'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('form4') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
 
                         <div class="form-group">
                             <div class="col-md-8 col-md-offset-4">
