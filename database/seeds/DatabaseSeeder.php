@@ -51,7 +51,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('abula'),
             'role' => 'customer',
             'savings_balance' => '0',
-            'username' => '1234567',
+            'username' => '12345678',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
              ]);
