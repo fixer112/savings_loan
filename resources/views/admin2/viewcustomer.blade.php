@@ -183,7 +183,7 @@ HONEYPAYS | View Customer- {{$user->username}}
 
               </tbody>
             </table>
-            {{$rejecteds->links()}}
+            {{$rejected->links()}}
          </div>
         
         @else
