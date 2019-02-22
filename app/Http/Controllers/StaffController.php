@@ -24,11 +24,11 @@ class StaffController extends Controller
     	
     		$id = Auth::user()->id;
 
-    		$approved = History::where('staff_id','=',$id)->where('approved','=','yes')->orderby('updated_at','desc')->paginate(500);
+    		$approved = History::where('staff_id','=',$id)->where('approved','=','yes')->orderby('updated_at','desc')->paginate(5000);
 
-    		$pendings = History::where('staff_id','=',$id)->where('approved','=','pending')->orderby('updated_at','desc')->paginate(500);
+    		$pendings = History::where('staff_id','=',$id)->where('approved','=','pending')->orderby('updated_at','desc')->paginate(5000);
 
-    		$rejected = History::where('staff_id','=',$id)->where('approved','=','no')->orderby('updated_at','desc')->paginate(500);
+    		$rejected = History::where('staff_id','=',$id)->where('approved','=','no')->orderby('updated_at','desc')->paginate(5000);
 
     		$customer = new User;
     		
@@ -442,7 +442,7 @@ class StaffController extends Controller
         //->orWhere('email', 'LIKE', '%'.$keyword.'%')
         ->orWhere('number', 'LIKE', '%'.$keyword.'%');
 
-        })->paginate(500);*/
+        })->paginate(5000);*/
 
     //$request->session()->put('search', $keyword);
     
@@ -459,8 +459,8 @@ class StaffController extends Controller
                 }
     	if (Auth::check() && Auth::user()->role == 'staff' && $user) {
     		$loan = $user->loan()->orderby('updated_at','desc')->first();
-    		$historys = $user->history()->where('approved','=','yes')->orderby('updated_at','desc')->paginate(500);
-    		$rejected = $user->history()->where('approved','=','no')->orderby('updated_at','desc')->paginate(500);
+    		$historys = $user->history()->where('approved','=','yes')->orderby('updated_at','desc')->paginate(5000);
+    		$rejected = $user->history()->where('approved','=','no')->orderby('updated_at','desc')->paginate(5000);
             $latest_loan = $user->loan()->latest()->first();
             $now = Carbon::now();
 

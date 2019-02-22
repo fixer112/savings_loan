@@ -27,15 +27,15 @@ class AdminController extends Controller
 
             //$latest_loan = Auth::user()->loan()->latest()->first();
     	
-    		$approved = History::where('approved','=','yes')->orderby('updated_at','desc')->paginate(500);
+    		$approved = History::where('approved','=','yes')->orderby('updated_at','desc')->paginate(5000);
 
-    		$pendings = History::where('approved','=','pending')->orderby('updated_at','desc')->paginate(500);
+    		$pendings = History::where('approved','=','pending')->orderby('updated_at','desc')->paginate(5000);
 
-    		$rejected = History::where('approved','=','no')->orderby('updated_at','desc')->paginate(500);
+    		$rejected = History::where('approved','=','no')->orderby('updated_at','desc')->paginate(5000);
 
             $loans = new Loan;
 
-             $dues = Verify::where('status', 'approved')->where('active','0')->paginate(500);
+             $dues = Verify::where('status', 'approved')->where('active','0')->paginate(5000);
 
     		$customer = new User;
             $now = Carbon::now();
@@ -877,7 +877,7 @@ class AdminController extends Controller
         //->orWhere('email', 'LIKE', '%'.$keyword.'%')
         ->orWhere('number', 'LIKE', '%'.$keyword.'%');
 
-        })->paginate(500);
+        })->paginate(5000);
 
     $request->session()->put('search', $keyword);
     return view('admin.searchstaff')->with(['searchs' => $searchs]);
@@ -897,8 +897,8 @@ class AdminController extends Controller
     	$user = User::where('id','=', $id)->first();
     	if (Auth::check() && Auth::user()->role == 'admin' && $user) {
     		$loan = $user->loan()->orderby('updated_at','desc')->first();
-    		$historys = $user->history()->where('approved','=','yes')->orderby('updated_at','desc')->paginate(500);
-    		$rejected = $user->history()->where('approved','=','no')->orderby('updated_at','desc')->paginate(500);
+    		$historys = $user->history()->where('approved','=','yes')->orderby('updated_at','desc')->paginate(5000);
+    		$rejected = $user->history()->where('approved','=','no')->orderby('updated_at','desc')->paginate(5000);
     		$latest_loan = $user->loan()->latest()->first();
             $now = Carbon::now();
 
