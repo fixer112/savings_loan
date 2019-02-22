@@ -886,7 +886,7 @@ class AdminController extends Controller
 
      public function search(Request $request){
 
-    $searchs = User::where('role', '=', 'customer')->paginate(500);
+    $searchs = User::where('role', '=', 'customer')->get();
     return view('admin.search', compact('searchs'));
              
     }

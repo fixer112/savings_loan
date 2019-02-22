@@ -8,6 +8,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Carbon\Carbon;
 use App\User;
+use Illuminate\Http\Request;
 
 class Controller extends BaseController
 {
@@ -127,4 +128,6 @@ public function custom_sms(){
 
        return $this->sms($to, urlencode($message));
 }
+
+
 }

@@ -433,7 +433,7 @@ class StaffController extends Controller
 
     //$keyword = $request->input('search');
 
-    $searchs = User::where('role', '=', 'customer')->where('referal','=', Auth::user()->mentor)->paginate(500);
+    $searchs = User::where('role', '=', 'customer')->where('referal','=', Auth::user()->mentor)->get();
 
     /*User::where(function ($query) use ($keyword) {
             $query->where('role', '=', 'customer')->where('suspend', '=', 'no');

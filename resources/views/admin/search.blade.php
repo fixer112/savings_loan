@@ -115,7 +115,7 @@ HONEYPAYS | Search
 
               </tbody>
             </table>
-            {{$searchs->links()}}
+            {{-- {{$searchs->links()}} --}}
             
          </div>
          @else

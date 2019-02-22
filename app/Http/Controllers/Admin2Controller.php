@@ -625,7 +625,7 @@ class Admin2Controller extends Controller
 
     //$keyword = $request->input('search');
 
-    $searchs = $searchs = User::where('role', '=', 'customer')->where('referal','=', Auth::user()->mentor)->paginate(500);
+    $searchs = $searchs = User::where('role', '=', 'customer')->where('referal','=', Auth::user()->mentor)->get();
 
     /*User::where(function ($query) use ($keyword) {
             $query->where('role', '=', 'customer')->where('suspend', '=', 'no');
