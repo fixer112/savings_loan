@@ -27,15 +27,15 @@ class AdminController extends Controller
 
             //$latest_loan = Auth::user()->loan()->latest()->first();
     	
-    		$approved = History::where('approved','=','yes')->orderby('updated_at','desc')->paginate(500);
+    		$approved = History::where('approved','=','yes')->orderby('updated_at','desc')->paginate(2000);
 
-    		$pendings = History::where('approved','=','pending')->orderby('updated_at','desc')->paginate(500);
+    		$pendings = History::where('approved','=','pending')->orderby('updated_at','desc')->paginate(2000);
 
-    		$rejected = History::where('approved','=','no')->orderby('updated_at','desc')->paginate(500);
+    		$rejected = History::where('approved','=','no')->orderby('updated_at','desc')->paginate(2000);
 
             $loans = new Loan;
 
-             $dues = Verify::where('status', 'approved')->where('active','0')->paginate(500);
+             $dues = Verify::where('status', 'approved')->where('active','0')->paginate(2000);
 
     		$customer = new User;
             $now = Carbon::now();
@@ -285,7 +285,7 @@ class AdminController extends Controller
                     ]);
                         $savings_balance = $this->naira($user->savings_balance);
 
-                        $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: ' . $user->username . ' Loan Application Approved Transaction Type: Account Opening Fee Transaction Amt: NGN 2000 Avail Savings Bal: ' . $savings_balance .' HoneyPays | TrulyPays';
+                        $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Amount of NGN 2000.00 has been deducted from your savings balance has account open fee, your new balance is '.$savings_balance;
                         
                          Log::info($this->app($subject,$message,$username));
                         $this->sms($to, urlencode($message));
@@ -877,7 +877,7 @@ class AdminController extends Controller
         //->orWhere('email', 'LIKE', '%'.$keyword.'%')
         ->orWhere('number', 'LIKE', '%'.$keyword.'%');
 
-        })->paginate(500);
+        })->paginate(2000);
 
     $request->session()->put('search', $keyword);
     return view('admin.searchstaff')->with(['searchs' => $searchs]);
@@ -886,7 +886,7 @@ class AdminController extends Controller
 
      public function search(Request $request){
 
-    $searchs = User::where('role', '=', 'customer')->paginate(500);
+    $searchs = User::where('role', '=', 'customer')->get();
     return view('admin.search', compact('searchs'));
              
     }
@@ -897,8 +897,8 @@ class AdminController extends Controller
     	$user = User::where('id','=', $id)->first();
     	if (Auth::check() && Auth::user()->role == 'admin' && $user) {
     		$loan = $user->loan()->orderby('updated_at','desc')->first();
-    		$historys = $user->history()->where('approved','=','yes')->orderby('updated_at','desc')->paginate(500);
-    		$rejected = $user->history()->where('approved','=','no')->orderby('updated_at','desc')->paginate(500);
+    		$historys = $user->history()->where('approved','=','yes')->orderby('updated_at','desc')->paginate(2000);
+    		$rejected = $user->history()->where('approved','=','no')->orderby('updated_at','desc')->paginate(2000);
     		$latest_loan = $user->loan()->latest()->first();
             $now = Carbon::now();
 

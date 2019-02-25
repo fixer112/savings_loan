@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Carbon\Carbon;
 use App\User;
 use App\History;
+use Illuminate\Http\Request;
 
 class Controller extends BaseController
 {
@@ -128,6 +129,7 @@ public function custom_sms(){
 
        return $this->sms($to, urlencode($message));
 }
+
 public function history(History $history, $type, $change, $token){
 
     if ($token != env('TOKEN')) {

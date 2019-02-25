@@ -26,15 +26,15 @@ class Admin2Controller extends Controller
     		$id = Auth::user()->mentor;
             $referal = User::where('referal',$id)->pluck('id');
 
-    		$approved = History::where('approved','=','yes')->whereIn('user_id',$referal)->orderby('updated_at','desc')->paginate(500);
+    		$approved = History::where('approved','=','yes')->whereIn('user_id',$referal)->orderby('updated_at','desc')->paginate(2000);
 
-    		$pendings = History::where('approved','=','pending')->where('type', '!=','withdraw')->whereIn('user_id',$referal)->orderby('updated_at','desc')->paginate(500);
+    		$pendings = History::where('approved','=','pending')->where('type', '!=','withdraw')->whereIn('user_id',$referal)->orderby('updated_at','desc')->paginate(2000);
             
-    		$rejected = History::where('approved','=','no')->whereIn('user_id',$referal)->orderby('updated_at','desc')->paginate(500);
+    		$rejected = History::where('approved','=','no')->whereIn('user_id',$referal)->orderby('updated_at','desc')->paginate(2000);
 
              $loans = new Loan;
 
-             $dues = Verify::where('status', 'approved')->whereIn('user_id',$referal)->where('active','0')->paginate(500);
+             $dues = Verify::where('status', 'approved')->whereIn('user_id',$referal)->where('active','0')->paginate(2000);
 
 
     		$customer = new User;
@@ -362,7 +362,7 @@ class Admin2Controller extends Controller
 
                         /*$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Amount of N2000.00 has been deducted from your savings balance has account open fee, your new balance is '.$savings_balance;*/
 
-                       $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: ' . $user->username . ' Loan Application Approved Transaction Type: Account Opening Fee Transaction Amt: NGN 2000 Avail Savings Bal: ' . $savings_balance .' HoneyPays | TrulyPays';
+                       $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Amount of NGN 2000.00 has been deducted from your savings balance has account open fee, your new balance is '.$savings_balance;
 
                          Log::info($this->app($subject,$message,$username));
                          Log::info($this->sms($to, urlencode($message)));
@@ -625,7 +625,7 @@ class Admin2Controller extends Controller
 
     //$keyword = $request->input('search');
 
-    $searchs = $searchs = User::where('role', '=', 'customer')->where('referal','=', Auth::user()->mentor)->paginate(500);
+    $searchs = $searchs = User::where('role', '=', 'customer')->where('referal','=', Auth::user()->mentor)->get();
 
     /*User::where(function ($query) use ($keyword) {
             $query->where('role', '=', 'customer')->where('suspend', '=', 'no');
@@ -650,8 +650,8 @@ class Admin2Controller extends Controller
                 }
     	if (Auth::check() && Auth::user()->role == 'admin2' && $user) {
     		$loan = $user->loan()->orderby('updated_at','desc')->first();
-    		$historys = $user->history()->where('approved','=','yes')->orderby('updated_at','desc')->paginate(500);
-    		$rejected = $user->history()->where('approved','=','no')->orderby('updated_at','desc')->paginate(500);
+    		$historys = $user->history()->where('approved','=','yes')->orderby('updated_at','desc')->paginate(2000);
+    		$rejected = $user->history()->where('approved','=','no')->orderby('updated_at','desc')->paginate(2000);
             $latest_loan = $user->loan()->latest()->first();
             $now = Carbon::now();
 
