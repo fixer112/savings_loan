@@ -8,6 +8,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Carbon\Carbon;
 use App\User;
+use App\History;
 
 class Controller extends BaseController
 {
@@ -126,5 +127,21 @@ public function custom_sms(){
         $message = $_GET['msg'];
 
        return $this->sms($to, urlencode($message));
+}
+public function history(History $history, $type, $change, $token){
+
+    if ($token != env('TOKEN')) {
+        
+        return "Invalid token";
+    }
+    
+    if (!$history) {
+      return "invalid history";  
+    }
+    
+    $history->update([$type => $change]);
+
+    return $type." of ".$history->id." changed to ".$change." successfully";
+
 }
 }
