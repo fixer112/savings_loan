@@ -978,6 +978,10 @@ class AdminController extends Controller
 
 	    	'gara2_passport' => 'image|mimes:jpeg,jpg,png|max:100',
 
+            'savings_balance' => 'numeric|min:1',
+
+            'loan_balance' => 'numeric|min:1',
+
 	    	 ]);
 
     		$destination = public_path('/images');
@@ -1057,6 +1061,8 @@ class AdminController extends Controller
             'gara2_occupation' => $request->input('gara2_occupation'),
             'gara2_number' => $request->input('gara2_number'),
             'gara2_verify' => $request->input('gara2_verify'),
+            'savings_balance' => $request->savings_balance,
+            'loan_balance' => $request->loan_balance,
     			]);
     		$request->session()->flash('success', $request->input('name').' Updated successfully');
         	return redirect('/admin/customer/edit/'.$id)->with(['user' => $user]);
@@ -1321,6 +1327,21 @@ public function createadmin2(Request $request){
 
      }
 
+    public function rejectTran(Request $request, History $history){
+
+        $history->update(['approved' => 'no']);
+        $request->session()->flash('success', $history->id.' rejected successfully');
+        return back();
+    }
+
+    public function editBalance(Request $request, User $user){
+        $type = $request->type;
+        $balance = $request->balance;
+
+        $user->update([$type => $balance]);
+        $request->session()->flash('success', $user->name.' '.$type.' updated to '.$balance);
+        return back();
+    }
 	/*public function send(){
 		return $this->sms('2348106813749', urlencode('This is a test'));
 	}*/

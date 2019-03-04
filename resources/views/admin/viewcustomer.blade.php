@@ -136,6 +136,7 @@ HONEYPAYS | View Customer- {{$user->username}}
                   <th>Credit</th>
                   <th>Applied Date</th>
                   <th>Verified Date</th>
+                  <th>Actions</th>
                   
 
                 </tr>
@@ -153,6 +154,7 @@ HONEYPAYS | View Customer- {{$user->username}}
                   <td> {{$history->credit}} </td>
                   <td> {{$history->created_at->format('d/m/Y H:i:s')}} </td>
                   <td> {{$history->updated_at->format('d/m/Y H:i:s')}} </td>
+                  <td><a href="/reject/{{$history->id}}"><button class="btn btn-danger">Reject</button></a></td>
        
                 </tr>
               @endforeach

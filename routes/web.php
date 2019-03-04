@@ -86,6 +86,9 @@ Route::get('admin/unsuspend/{id}', 'AdminController@unsuspend');
 Route::get('admin/info', 'AdminController@info');
 Route::get('admin/fee/{id}', 'AdminController@fee');
 Route::get('admin/veri_interest/{loan}', 'AdminController@veri_interest');
+
+Route::get('reject/{history}', 'AdminController@rejectTran');
+Route::get('balance/{user}', 'AdminController@editBalance');
 //Route::get('admin/sms', 'AdminController@send');
 
 

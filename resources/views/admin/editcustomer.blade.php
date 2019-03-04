@@ -61,6 +61,34 @@ HONEYPAYS | Edit customer
                             </div>
                         </div>
 
+                        <div class="form-group{{ $errors->has('savings_balance') ? ' has-error' : '' }}">
+                            <label for="name" class="col-md-4 control-label">Savings Balance</label>
+
+                            <div class="col-md-10">
+                                <input id="savings_balance" type="number" class="form-control" name="savings_balance" value="{{ $user->savings_balance }}"  autofocus>
+
+                                @if ($errors->has('savings_balance'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('savings_balance') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group{{ $errors->has('loan_balance') ? ' has-error' : '' }}">
+                            <label for="name" class="col-md-4 control-label">Loan Balance</label>
+
+                            <div class="col-md-10">
+                                <input id="loan_balance" type="number" class="form-control" name="loan_balance" value="{{ $user->loan_balance }}"  autofocus>
+
+                                @if ($errors->has('loan_balance'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('loan_balance') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="form-group{{ $errors->has('mentor') ? ' has-error' : '' }}">
                             <label for="name" class="col-md-4 control-label">Branch Code</label>
 

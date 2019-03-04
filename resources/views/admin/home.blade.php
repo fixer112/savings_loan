@@ -130,6 +130,7 @@ HONEYPAYS | {{ Auth::user()->name }}
                   <th>Debit</th>
                   <th>Credit</th>
                   <th>Week Due (##due_count##)</th>
+                  <th>Actions</th>
                   
 
                 </tr>
@@ -170,7 +171,7 @@ HONEYPAYS | {{ Auth::user()->name }}
                   @else
                   <td> - </td>
                   @endif
-       
+                  <td><a href="/reject/{{$approve->id}}"><button class="btn btn-danger">Reject</button></a></td>
                 </tr>
               @endforeach
               </tbody>
