@@ -72,3 +72,13 @@ const app = new Vue({
             }
         }
 });
+
+const app = new Vue({
+    el: '#tran',
+    data: {
+            name:'test',
+        },
+       methods:{
+
+        }
+});

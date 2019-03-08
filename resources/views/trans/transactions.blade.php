@@ -40,7 +40,7 @@ HONEYPAYS |  Register
 @endsection
 
 @section('content')
-<div class="container">
+<div class="container tran">
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
