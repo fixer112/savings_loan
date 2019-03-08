@@ -17,8 +17,8 @@ window.Vue = require('vue');
 
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
 
-const app = new Vue({
-    el: '#app',
+const reg = new Vue({
+    el: '#reg',
     data: {
     		branch:"",
     		mobile:"",
@@ -73,12 +73,39 @@ const app = new Vue({
         }
 });
 
-const app = new Vue({
+    const tran = new Vue({
     el: '#tran',
-    data: {
-            name:'test',
-        },
+    data: function() {
+    return {
+        name:"",
+        username:""
+    }
+  }, 
        methods:{
+        checkname(){
+            axios.get('/accountUser/'+this.username)
+            .then(response => {
+                console.log(response.data)
+                if(response.data.user){
+                    this.name = response.data.user.name;
+                }else{
+                    this.name = "";
+                }
 
+                })
+                .catch((error)=>{
+                    console.log(error.response.data)
+                })
+        },
+
+        },
+        watch:{
+            username(){
+                this.checkname();
+            }
+        },
+        created(){
+           //alert(this.acc)
+           //this.acc_name = "Test"
         }
 });

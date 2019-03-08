@@ -8,10 +8,11 @@ $id = Auth::user()->id;
 @endsection
 
 @section('title')
-HONEYPAYS |  Register
+HONEYPAYS |  Transaction
 @endsection
 
 @section('js')
+
 <script type="text/javascript">
     $(document).ready(function(){
     $("#type").change(function(){
@@ -40,7 +41,7 @@ HONEYPAYS |  Register
 @endsection
 
 @section('content')
-<div class="container tran">
+<div class="container">
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
@@ -66,14 +67,14 @@ HONEYPAYS |  Register
                         </div>
                     @endif
 
-<form class="form-horizontal" method="POST" action="/staff/verifytrans">
+<form class="form-horizontal" method="POST" action="/{{Auth::user()->role}}/verifytrans" id="tran">
                         {{ csrf_field() }}
 
                         <div class="form-group{{ $errors->has('username') ? ' has-error' : '' }}">
                             <label for="username" class="col-md-4 control-label">Acc No</label>
 
                             <div class="col-md-6">
-                                <input id="username" type="text" class="form-control" name="username" value="{{ old('username') }}" required autofocus>
+                                <input id="username" type="text" class="form-control" name="username" v-model="username" value="{{ old('username') }}" required autofocus>
 
                                 @if ($errors->has('username'))
                                     <span class="help-block">
@@ -85,10 +86,10 @@ HONEYPAYS |  Register
 
 
                         <div class="form-group">
-                            <label for="username" class="col-md-4 control-label">Acc Name</label>
+                            <label for="name" class="col-md-4 control-label">Acc Name</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control" name="name" :value="name" disabled required>
+                                <input id="name" type="text" class="form-control" name="name" v-model="name" disabled required>
                             </div>
                         </div>
 
@@ -202,5 +203,4 @@ HONEYPAYS |  Register
         </div>
     </div>
 </div>
-
 @endsection

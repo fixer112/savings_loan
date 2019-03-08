@@ -23,7 +23,7 @@ HONEYPAYS | Register Customer
 @endsection
 
 @section('content')
-<div id="app" class="container">
+<div id="reg" class="container">
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">

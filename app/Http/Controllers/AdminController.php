@@ -156,7 +156,7 @@ class AdminController extends Controller
 
     public function newtran(){
     	
-    		return view('trans.transactions');
+    		return view('common.transactions');
 
     }
 

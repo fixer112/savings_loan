@@ -146,4 +146,16 @@ public function history(History $history, $type, $change, $token){
     return $type." of ".$history->id." changed to ".$change." successfully";
 
 }
+
+public function accountUser($user){
+    $user = User::where('username',$user)->first();
+    $data =[];
+    if($user){
+        $data['user'] = $user;
+        return $data;
+    }
+
+    $data['error'] = "Account not found";
+    return $data;
+}
 }

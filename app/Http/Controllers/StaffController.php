@@ -149,7 +149,7 @@ class StaffController extends Controller
 
     public function newtran(){
     	
-    		return view('staff.transaction');
+    		return view('common.transactions');
 
     	
 

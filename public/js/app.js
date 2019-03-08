@@ -13893,8 +13893,8 @@ window.Vue = __webpack_require__(36);
 
 Vue.component('example-component', __webpack_require__(39));
 
-var app = new Vue({
-    el: '#app',
+var reg = new Vue({
+    el: '#reg',
     data: {
         branch: "",
         mobile: "",
@@ -13945,6 +13945,41 @@ var app = new Vue({
             this.acc_num = acc_no;
             alert(acc_no);
         }
+    }
+});
+
+var tran = new Vue({
+    el: '#tran',
+    data: function data() {
+        return {
+            name: "",
+            username: ""
+        };
+    },
+    methods: {
+        checkname: function checkname() {
+            var _this = this;
+
+            axios.get('/accountUser/' + this.username).then(function (response) {
+                console.log(response.data);
+                if (response.data.user) {
+                    _this.name = response.data.user.name;
+                } else {
+                    _this.name = "";
+                }
+            }).catch(function (error) {
+                console.log(error.response.data);
+            });
+        }
+    },
+    watch: {
+        username: function username() {
+            this.checkname();
+        }
+    },
+    created: function created() {
+        //alert(this.acc)
+        //this.acc_name = "Test"
     }
 });
 
