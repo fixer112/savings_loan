@@ -83,6 +83,7 @@ const reg = new Vue({
   }, 
        methods:{
         checkname(){
+            this.name = "Loading..."
             axios.get('/accountUser/'+this.username)
             .then(response => {
                 console.log(response.data)
