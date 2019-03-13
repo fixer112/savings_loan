@@ -984,6 +984,13 @@ class AdminController extends Controller
 
 	    	 ]);
 
+            if ($request->username && $request->username != $user->username ) {
+                $this->validate($request, [
+                'username' => 'numeric|digits:10|unique:users',
+             ]);
+                $user->update(['username' => $request->username ]);
+            }
+
     		$destination = public_path('/images');
 
     		if ($request->file('passport')) {

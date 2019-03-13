@@ -105,8 +105,10 @@ HONEYPAYS | View Customer- {{$user->username}}
                   <button class="btn btn-success"><i class="fa fa-pause"></i><a href="/admin/suspend/{{$user->id}}">Suspend</a></button>
                   @else
                   <button class="btn btn-success"><i class="fa fa-play"></i><a href="/admin/unsuspend/{{$user->id}}">Unsuspend</a></button>
-                  @endif</p>
-                  <button class="btn btn-danger"><i class="fa fa-edit"></i><a href="/admin/customer/edit/{{$user->id}}">Edit</a></button>
+                  @endif
+                   <button class="btn btn-danger"><i class="fa fa-edit"></i><a href="/admin/customer/edit/{{$user->id}}">Edit</a></button>
+                  </p>
+
                         
                     </div>
                     </div>
