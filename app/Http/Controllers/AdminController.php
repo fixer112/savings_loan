@@ -966,7 +966,7 @@ class AdminController extends Controller
 	    	//'password' =>'required|min:5|max:20',
 
             'mentor' => 'required|numeric|exists:users,mentor',
-            'username' => 'numeric|digits:10|unique:users',
+            //'username' => 'numeric|digits:10|unique:users',
 
 	    	'passport' => 'image|max:100',
 
@@ -978,9 +978,9 @@ class AdminController extends Controller
 
 	    	'gara2_passport' => 'image|mimes:jpeg,jpg,png|max:100',
 
-            'savings_balance' => 'numeric|min:1',
+            'savings_balance' => 'numeric|min:0',
 
-            'loan_balance' => 'numeric|min:1',
+            'loan_balance' => 'numeric|min:0',
 
 	    	 ]);
 
@@ -1040,7 +1040,7 @@ class AdminController extends Controller
     		$user->update([
     		'name' => strtoupper($request->input('name')),
             'referal' => $request->input('mentor'),
-            'username' => $request->input('username'),
+            //'username' => $request->input('username'),
             //'password'=> bcrypt($request->input('password')),
             'resi_add' => $request->input('resi_add'),
             'busi_add' => $request->input('busi_add'),

@@ -106,6 +106,7 @@ HONEYPAYS | View Customer- {{$user->username}}
                   @else
                   <button class="btn btn-success"><i class="fa fa-play"></i><a href="/admin/unsuspend/{{$user->id}}">Unsuspend</a></button>
                   @endif</p>
+                  <button class="btn btn-danger"><i class="fa fa-edit"></i><a href="/admin/customer/edit/{{$user->id}}">Edit</a></button>
                         
                     </div>
                     </div>
