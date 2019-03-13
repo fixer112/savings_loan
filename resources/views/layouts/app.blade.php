@@ -35,6 +35,9 @@ Developed by Altechtic Solutions | altechtic.com.ng | 08106813749
         .card-header{
             color: blue;
         }
+        .card{
+            background-color: #ffffffe8;
+        }
     </style>
 
    @yield('css')
