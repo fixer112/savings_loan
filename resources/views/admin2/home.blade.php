@@ -99,6 +99,7 @@ HONEYPAY | {{ Auth::user()->name }}
                   <th>Debit</th>
                   <th>Credit</th>
                   <th>Week Due</th>
+                  <th>Actions</th>
                   
 
                 </tr>
@@ -135,6 +136,7 @@ HONEYPAY | {{ Auth::user()->name }}
                   @else
                   <td> - </td>
                   @endif
+                  
        
                 </tr>
                 {{-- @endif --}}

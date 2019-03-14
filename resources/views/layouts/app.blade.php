@@ -190,6 +190,9 @@ Developed by Altechtic Solutions | altechtic.com.ng | 08106813749
     <!-- <script src="{{ asset('/css/vendor/datatables/jquery.dataTables.js') }}"></script> -->
     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="{{ asset('/css/vendor/datatables/dataTables.bootstrap4.js') }}"></script>
+    {{-- @if(Auth::user()->role == 'customer') --}}
+    <script src="http://code.tidio.co/myuqp2mwyctv2bsno70lihphmhxi3afo.js"></script>
+    {{-- @endif --}}
     @yield('js')
 </body>
 </html>

@@ -1335,8 +1335,15 @@ public function createadmin2(Request $request){
      }
 
     public function rejectTran(Request $request, History $history){
-
+        if($history->approved != 'yes'){
+            $request->session()->flash('failed', $history->id.' not approved transaction');
+        return back();
+        }
         $history->update(['approved' => 'no']);
+
+        /*if($history->credit > 0){
+            $history->user()->update(['savings_balance'])
+        }*/
         $request->session()->flash('success', $history->id.' rejected successfully');
         return back();
     }
