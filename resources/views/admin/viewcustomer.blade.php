@@ -89,6 +89,8 @@ HONEYPAYS | View Customer- {{$user->username}}
 
                             Interest Status: <strong style="color: green" >{{ $latest_loan->interest_status }} </strong>
 
+                             <a href="/admin/unveri_interest/{{$latest_loan->id}}"><button class="btn btn-success">UnVerify Interest</button></a>
+
                             @endif
                             </p>
 

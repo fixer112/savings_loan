@@ -29,8 +29,8 @@ class StatsController extends Controller
 	        'to' => 'required|date_format:Y-m-d|after:'.$min,
 	        ]);
 	    }else {
-	        $from = Carbon::now()->format('Y-m-d');
-	        $to = Carbon::now()->format('Y-m-d');
+	        $from = Carbon::now()->startOfDay()->format('Y-m-d H:i:s');
+	        $to = Carbon::now()->endOfDay()->format('Y-m-d H:i:s');
 	        session(['from'=>Carbon::now()->format('Y-m-d'), 'to'=>Carbon::now()->format('Y-m-d')]);
 	    }
 

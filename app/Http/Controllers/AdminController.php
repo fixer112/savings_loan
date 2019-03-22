@@ -1314,6 +1314,24 @@ public function createadmin2(Request $request){
             
     }
 
+    public function unveri_interest(Request $request, Loan $loan){
+
+        
+
+           if ($loan && $loan->interest_status != 'not paid') {
+            $request->session()->flash('success', 'Loan Interest updated');
+               $loan->update(['interest_status' => 'not paid']);
+           }else{
+            $request->session()->flash('failed', 'Loan interest is Unpaid already or no loan exists');
+           }
+           
+
+            return redirect('admin/customer/'.$loan->user_id);
+
+
+            
+    }
+
      public function delete(Request $request, User $user){
         $user->delete();
         $request->session()->flash('success', 'User Deleted successfully '.$user->name);
