@@ -12,7 +12,16 @@
 @section('title')
 HONEYPAYS | View Customer- {{$user->username}}
 @endsection
-
+@section('js')
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+@endsection
 @section('menu')
 
 @endsection
@@ -103,7 +112,7 @@ HONEYPAYS | View Customer- {{$user->username}}
   <div class="tab-pane fade show active" id="approved" role="tabpanel" aria-labelledby="approved-tab">
   @if ($historys->count()>0)
           <div class="table-responsive">
-            <table class="display table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <table class="search table-bordered" id="dataTable" width="100%" cellspacing="0">
               <thead>
                 <tr>
                 <th>Transaction ID</th>
@@ -149,7 +158,7 @@ HONEYPAYS | View Customer- {{$user->username}}
   <div class="tab-pane fade" id="rejected" role="tabpanel" aria-labelledby="rejected-tab">
   @if ($rejected->count()>0)
           <div class="table-responsive">
-            <table class="display table-bordered" id="dataTable" width="100%" cellspacing="0">
+            <table class="search table-bordered" id="dataTable" width="100%" cellspacing="0">
               <thead>
                 <tr>
                 <th>Transaction ID</th>
