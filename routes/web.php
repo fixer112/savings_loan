@@ -121,7 +121,7 @@ Route::get('admin2', 'Admin2Controller@index');
 Route::get('admin2/newcustomer', 'Admin2Controller@newcus');
 Route::post('admin2/register', 'Admin2Controller@register');
 Route::get('admin2/transaction', 'Admin2Controller@newtran');
-Route::post('admin2/verifytrans', 'Admin2Controller@transaction');
+Route::post('admin2/verifytrans', 'AdminController@transaction');
 /*Route::get('admin2/search', function () {
     if (Auth::user()->role == 'admin2') {
     return view('admin2.search');

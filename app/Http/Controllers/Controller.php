@@ -30,6 +30,10 @@ class Controller extends BaseController
             
         $username = env('SMS_USERNAME');
         $password = env('SMS_PASSWORD');
+        if (env('APP_ENV') != 'production') {
+            # code...
+            return false;
+        }
         $sender = 'HONEYPAYS';
         $data = 'username='.$username.'&password='.$password.'&sender='.$sender.'&to='.$to.'&message='.$message;
 
@@ -49,6 +53,10 @@ class Controller extends BaseController
     }
 
     public function app($title, $message, $topic) {
+        if (env('APP_ENV') != 'production') {
+            # code...
+            return false;
+        }
     //$email = str_replace("@", "%", $topic);
     $acc_no = "mcredit_".$topic;
     $url = 'https://fcm.googleapis.com/fcm/send';

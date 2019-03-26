@@ -114,6 +114,7 @@ HONEYPAYS |  Transaction
                                 <select id="type" type="option" class="form-control" name="type" value="{{ old('type') }}" required autofocus>
 
                                 <option value="deposit">DEPOSIT</option>
+                                <option value="payment">LOAN PAYMENT</option>
                                 <option value="withdraw">WITHDRAW</option>
                                 <option value="default_fee">DEFAULT FEE</option>
                                 <option value="interest_fee">INTEREST FEE</option>

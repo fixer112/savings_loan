@@ -238,7 +238,7 @@ class StaffController extends Controller
 			    		}
 
 
-    			if ($request->input('type')=='deposit'){
+    			if ($request->input('type')=='deposit' || $request->input('type')=='payment'){
     				if (!isset($pending)) {
     				History::create([
 			            'recieved_by' => $request->input('recieved'),

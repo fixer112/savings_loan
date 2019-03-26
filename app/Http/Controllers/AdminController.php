@@ -18,8 +18,8 @@ class AdminController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin')->except('approve','reject');
-        $this->middleware('super')->only('approve', 'reject');
+        $this->middleware('admin')->except('approve','reject','transaction');
+        $this->middleware('super')->only('approve', 'reject','transaction');
     }
 
 
@@ -202,17 +202,37 @@ class AdminController extends Controller
 		return back();
     	}
 
-    	if ($history->type == 'deposit') {
-    		if ($user->loan_balance > 0 && $user->loan_balance <= $history->credit) {
-    					
-    					$remain = $history->credit - $user->loan_balance;
-    					$user->loan_balance = 0;
-    					$balance = $user->savings_balance + $remain;
-    					$user->update(['savings_balance' => $balance]);
-    					//update loan verify
-    					if ($latest_loan->veri_remark == 'Not Approved') {
-    						$latest_loan->update(['veri_remark' => 'Approved']);
-    					}
+    	if ($history->type == 'deposit' || $history->type == 'payment') {
+            if ($history->type == 'deposit'){
+            $balance = $user->savings_balance + $history->credit;
+                        $user->update(['savings_balance' => $balance]);
+
+                $debit = $this->naira($history->debit);
+                $credit = $this->naira($history->credit);
+                $savings_balance = $this->naira($user->savings_balance);
+                $loan_balance = $this->naira($user->loan_balance);
+
+                $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Transaction Type: '.$history->description.' Transaction Amt: '.$credit.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
+
+                         Log::info($this->app($subject,$message,$username));
+                        $request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
+    		}
+
+            if ($history->type == 'payment') {
+                if ($user->loan_balance == 0) {
+                    $request->session()->flash('failed', $user->username.' has no loan balance');
+                return back();
+                }
+                if ($user->loan_balance > 0 && $user->loan_balance <= $history->credit) {
+                        
+                        $remain = $history->credit - $user->loan_balance;
+                        $user->loan_balance = 0;
+                        $balance = $user->savings_balance + $remain;
+                        $user->update(['savings_balance' => $balance]);
+                        //update loan verify
+                        if ($latest_loan->veri_remark == 'Not Approved') {
+                            $latest_loan->update(['veri_remark' => 'Approved']);
+                        }
                         //
                         
 
@@ -223,47 +243,35 @@ class AdminController extends Controller
                             $latest_loan->update(['skip_due' => $skip_due, 'week_due_date' => $now] );
                             
                         }
-    					
-    			$debit = $this->naira($history->debit);
-		    	$credit = $this->naira($history->credit);
-		    	$savings_balance = $this->naira($user->savings_balance);
-		    	$loan_balance = $this->naira($user->loan_balance);
-				//Alert User by SMS
-				$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Your loan have been fully paid. Transaction Type: '.$history->description.' Transaction Amt: '.$credit.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
+                        
+                $debit = $this->naira($history->debit);
+                $credit = $this->naira($history->credit);
+                $savings_balance = $this->naira($user->savings_balance);
+                $loan_balance = $this->naira($user->loan_balance);
+                //Alert User by SMS
+                $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Your loan have been fully paid. Transaction Type: '.$history->description.' Transaction Amt: '.$credit.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
 
                  Log::info($this->app($subject,$message,$username));
 
-	    		$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
+                $request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
 
-    				}elseif ($user->loan_balance > $history->credit) {
-    					$balance = $user->loan_balance - $history->credit;
-    					$user->update(['loan_balance' => $balance]);
+                    }elseif ($user->loan_balance > $history->credit) {
+                        $balance = $user->loan_balance - $history->credit;
+                        $user->update(['loan_balance' => $balance]);
 
-    					$debit = $this->naira($history->debit);
-		    	$credit = $this->naira($history->credit);
-		    	$savings_balance = $this->naira($user->savings_balance);
-		    	$loan_balance = $this->naira($user->loan_balance);
+                        $debit = $this->naira($history->debit);
+                $credit = $this->naira($history->credit);
+                $savings_balance = $this->naira($user->savings_balance);
+                $loan_balance = $this->naira($user->loan_balance);
 
-    			$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Loan partly paid. Transaction Type: '.$history->description.' Transaction Amt: '.$credit.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
-
-                         Log::info($this->app($subject,$message,$username));
-    					$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
-
-    				}elseif($user->loan_balance == 0) {
-    					$balance = $user->savings_balance + $history->credit;
-    					$user->update(['savings_balance' => $balance]);
-
-    			$debit = $this->naira($history->debit);
-		    	$credit = $this->naira($history->credit);
-		    	$savings_balance = $this->naira($user->savings_balance);
-		    	$loan_balance = $this->naira($user->loan_balance);
-
-    			$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Transaction Type: '.$history->description.' Transaction Amt: '.$credit.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
+                $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Loan partly paid. Transaction Type: '.$history->description.' Transaction Amt: '.$credit.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
 
                          Log::info($this->app($subject,$message,$username));
-    					$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
-    				}
+                        $request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
+
+                    }
+            }
 
     				$history->update(['approved' => 'yes']);
 
@@ -509,22 +517,46 @@ class AdminController extends Controller
 
 			    		}
 
-    			if ($request->input('type')=='deposit'){
+    			if ($request->input('type')=='deposit' || $request->input('type')=='payment'){
+
     				if (!isset($pending)) {
-    				History::create([
-			            'recieved_by' => $request->input('recieved'),
-			            'description' => $request->input('description'),
-			            'debit' => '0',
-			            'credit' => $request->input('amount'),
-			            'type' => $request->input('type'),
-			            'approved' => 'yes',
-			            'user_id' => $user->id,
-			        ]);
+                    History::create([
+                        'recieved_by' => $request->input('recieved'),
+                        'description' => $request->input('description'),
+                        'debit' => '0',
+                        'credit' => $request->input('amount'),
+                        'type' => $request->input('type'),
+                        'approved' => 'yes',
+                        'user_id' => $user->id,
+                    ]);
+
+                        
+                        if ($request->input('type')=='deposit') {
+                            $balance =$user->savings_balance + $request->input('amount');
+                        $user->update(['savings_balance' => $balance]);
+
+                        $amount = $this->naira($request->input('amount'));
+                        $savings_balance = $this->naira($user->savings_balance);
+                        $loan_balance = $this->naira($user->loan_balance);
+                        $loan_amount = $this->naira($request->input('category'));
+
+                        $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Transaction Type: '.$request->input('description').' Transaction Amt: '.$amount.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
+
+                         Log::info($this->app($subject,$message,$username));
+                        $request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
+                        }
 
 
-    				if ($user->loan_balance > 0 && $user->loan_balance <= $request->input('amount')) {
 
-    					if ($latest_loan && $latest_loan->week_due_date->diffInWeeks($now, false) > 0 && $latest_loan->week_due_date->diffInWeeks($latest_loan->due_date, false) > 0 ) {
+                        if ($request->input('type')=='payment') {
+                            if ($user->loan_balance == 0) {
+                                $request->session()->flash('failed', $user->username.' has no loan balance');
+                            return back();
+                            }
+
+                            if ($user->loan_balance > 0 && $user->loan_balance <= $request->input('amount')) {
+
+                        if ($latest_loan && $latest_loan->week_due_date->diffInWeeks($now, false) > 0 && $latest_loan->week_due_date->diffInWeeks($latest_loan->due_date, false) > 0 ) {
 
                             $skip_due = $latest_loan->skip_due + $latest_loan->week_due_date->diffInWeeks($now, false);
 
@@ -533,58 +565,50 @@ class AdminController extends Controller
                         }
 
 
-    					$remain = $request->input('amount') - $user->loan_balance;
-    					$user->loan_balance = 0;
-    					$balance = $user->savings_balance + $remain;
-    					$user->update(['savings_balance' => $balance]);
-    					//update loan verify
-    					if ($latest_loan->veri_remark == 'Not Approved') {
-    						$latest_loan->update(['veri_remark' => 'Approved']);
-    					}
+                        $remain = $request->input('amount') - $user->loan_balance;
+                        $user->loan_balance = 0;
+                        $balance = $user->savings_balance + $remain;
+                        $user->update(['savings_balance' => $balance]);
+                        //update loan verify
+                        if ($latest_loan->veri_remark == 'Not Approved') {
+                            $latest_loan->update(['veri_remark' => 'Approved']);
+                        }
 
 
 
 
-    					$amount = $this->naira($request->input('amount'));
-				    	$savings_balance = $this->naira($user->savings_balance);
-				    	$loan_balance = $this->naira($user->loan_balance);
-				    	$loan_amount = $this->naira($request->input('category'));
+                        $amount = $this->naira($request->input('amount'));
+                        $savings_balance = $this->naira($user->savings_balance);
+                        $loan_balance = $this->naira($user->loan_balance);
+                        $loan_amount = $this->naira($request->input('category'));
 
-    					//Alert User by SMS
-    					$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Your loan have been fully paid. Transaction Type: '.$request->input('description').' Transaction Amt: '.$amount.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
-
-                         Log::info($this->app($subject,$message,$username));
-			    		$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
-
-    				}elseif ($user->loan_balance > $request->input('amount')) {
-    					$balance = $user->loan_balance - $request->input('amount');
-    					$user->update(['loan_balance' => $balance]);
-
-    					$amount = $this->naira($request->input('amount'));
-				    	$savings_balance = $this->naira($user->savings_balance);
-				    	$loan_balance = $this->naira($user->loan_balance);
-				    	$loan_amount = $this->naira($request->input('category'));
-
-    					$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Loan partly paid. Transaction Type: '.$request->input('description').' Transaction Amt: '.$amount.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
+                        //Alert User by SMS
+                        $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Your loan have been fully paid. Transaction Type: '.$request->input('description').' Transaction Amt: '.$amount.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
 
                          Log::info($this->app($subject,$message,$username));
-    					$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
+                        $request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
 
+                    }elseif ($user->loan_balance > $request->input('amount')) {
+                        $balance = $user->loan_balance - $request->input('amount');
+                        $user->update(['loan_balance' => $balance]);
 
-    				}elseif($user->loan_balance == 0) {
-    					$balance =$user->savings_balance + $request->input('amount');
-    					$user->update(['savings_balance' => $balance]);
+                        $amount = $this->naira($request->input('amount'));
+                        $savings_balance = $this->naira($user->savings_balance);
+                        $loan_balance = $this->naira($user->loan_balance);
+                        $loan_amount = $this->naira($request->input('category'));
 
-    					$amount = $this->naira($request->input('amount'));
-				    	$savings_balance = $this->naira($user->savings_balance);
-				    	$loan_balance = $this->naira($user->loan_balance);
-				    	$loan_amount = $this->naira($request->input('category'));
-
-    					$message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Transaction Type: '.$request->input('description').' Transaction Amt: '.$amount.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
+                        $message = 'NOTIFICATION ' .Carbon::now(). ' Acct: '.$user->username.' Loan partly paid. Transaction Type: '.$request->input('description').' Transaction Amt: '.$amount.' Avail Savings Bal: '.$savings_balance.' Loan Bal: '.$loan_balance;
 
                          Log::info($this->app($subject,$message,$username));
-    					$request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
-    				}
+                        $request->session()->flash('sms', 'Message Response: ' . $this->sms($to, urlencode($message)));
+
+
+                    }
+
+
+                        }
+
+    				
 
     				//}
                     if ($user->open_fee=='1') {
@@ -990,6 +1014,10 @@ class AdminController extends Controller
              ]);
                 $user->update(['username' => $request->username ]);
             }
+
+           /* if ($user->savings_balance != $request->savings_balance) {
+                
+            }*/
 
     		$destination = public_path('/images');
 
