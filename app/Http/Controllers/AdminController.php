@@ -223,12 +223,16 @@ class AdminController extends Controller
                     $request->session()->flash('failed', $user->username.' has no loan balance');
                 return back();
                 }
-                if ($user->loan_balance > 0 && $user->loan_balance <= $history->credit) {
+                if ($history->credit > $user->loan_balance ) {
+                                $request->session()->flash('failed', 'Amount inputed is more than '.$user->username.' loan balance');
+                            return back();
+                            }
+                if ($user->loan_balance > 0 && $user->loan_balance == $history->credit) {
                         
-                        $remain = $history->credit - $user->loan_balance;
-                        $user->loan_balance = 0;
-                        $balance = $user->savings_balance + $remain;
-                        $user->update(['savings_balance' => $balance]);
+                        //$remain = $history->credit - $user->loan_balance;
+                        //$user->loan_balance = 0;
+                        //$balance = $user->savings_balance + $remain;
+                        $user->update(['loan_balance' => 0]);
                         //update loan verify
                         if ($latest_loan->veri_remark == 'Not Approved') {
                             $latest_loan->update(['veri_remark' => 'Approved']);
@@ -554,7 +558,12 @@ class AdminController extends Controller
                             return back();
                             }
 
-                            if ($user->loan_balance > 0 && $user->loan_balance <= $request->input('amount')) {
+                            if ($request->input('amount') > $user->loan_balance ) {
+                                $request->session()->flash('failed', 'Amount inputed is more than '.$user->username.' loan balance');
+                            return back();
+                            }
+
+                            if ($user->loan_balance > 0 && $user->loan_balance == $request->input('amount')) {
 
                         if ($latest_loan && $latest_loan->week_due_date->diffInWeeks($now, false) > 0 && $latest_loan->week_due_date->diffInWeeks($latest_loan->due_date, false) > 0 ) {
 
@@ -565,10 +574,10 @@ class AdminController extends Controller
                         }
 
 
-                        $remain = $request->input('amount') - $user->loan_balance;
-                        $user->loan_balance = 0;
-                        $balance = $user->savings_balance + $remain;
-                        $user->update(['savings_balance' => $balance]);
+                        //$remain = $request->input('amount') - $user->loan_balance;
+                        //$user->loan_balance = 0;
+                        //$balance = $user->savings_balance + $remain;
+                        $user->update(['loan_balance' => 0]);
                         //update loan verify
                         if ($latest_loan->veri_remark == 'Not Approved') {
                             $latest_loan->update(['veri_remark' => 'Approved']);

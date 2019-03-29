@@ -14,12 +14,12 @@ class DatabaseSeeder extends Seeder
     {
         // $this->call(UsersTableSeeder::class);
         DB::table('users')->insert([
-            'name' => 'HoneyPay Admin 1',
+            'name' => 'Admin',
             //'email' => 'abula@gmail.com',
-            'password' => bcrypt('honeypays2011'),
+            'password' => bcrypt('abula'),
             'role' => 'admin',
             'mentor' => '01',
-            'username' => '0359791700',
+            'username' => '607055',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
              ]);
@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             //'email' => 'abuk@gmail.com',
             'password' => bcrypt('abula'),
             'role' => 'staff',
-            'username' => '12345',
+            'username' => '123456',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
              ]);
@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('abula'),
             'role' => 'admin2',
             'savings_balance' => '0',
-            'username' => '123456',
+            'username' => '12345',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
              ]);
@@ -51,7 +51,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('abula'),
             'role' => 'customer',
             'savings_balance' => '0',
-            'username' => '12345678',
+            'username' => '1234567',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
              ]);
