@@ -477,7 +477,7 @@ class AdminController extends Controller
     			
 
     			if ($request->input('type')=='withdraw') {
-    				if ($user->savings_balance >= $request->input('amount') && $request->input('amount') > 0 && !isset($loan) && !isset($pending) ) {
+    				if ($user->savings_balance >= $request->input('amount') && $request->input('amount') > 0 /*&& !isset($loan)*/ && !isset($pending) ) {
     					
     				
 
@@ -510,7 +510,7 @@ class AdminController extends Controller
     					return back();
 
 			    			}else {
-			    			$request->session()->flash('failed', $request->input('username').' has Insufficient Account Balance or has a pending transaction or has an unpaid loan or amount is less than 0');
+			    			$request->session()->flash('failed', $request->input('username').' has Insufficient Account Balance or has a pending transaction or amount is less than 0');
 			    			
 			    			return back();
 			    			}

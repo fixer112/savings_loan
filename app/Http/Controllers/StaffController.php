@@ -211,7 +211,7 @@ class StaffController extends Controller
     			
 
     			if ($request->input('type')=='withdraw') {
-    				if ($user->savings_balance >= $request->input('amount') && $request->input('amount') > 0 && !isset($loan) && !isset($pending) ) {
+    				if ($user->savings_balance >= $request->input('amount') && $request->input('amount') > 0 /*&& !isset($loan)*/ && !isset($pending) ) {
     					
     				
 
@@ -230,7 +230,7 @@ class StaffController extends Controller
     					return redirect('staff/transaction');
 
 			    			}else {
-			    			$request->session()->flash('failed', $request->input('username').' has Insufficient Account Balance or has a pending transaction or has an unpaid loan ');
+			    			$request->session()->flash('failed', $request->input('username').' has Insufficient Account Balance or has a pending transaction'); 
 			    			//return $pending."</br>".$loan;
 			    			return redirect('staff/transaction');
 			    			}
