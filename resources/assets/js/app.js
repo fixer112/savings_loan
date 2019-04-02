@@ -90,7 +90,7 @@ const reg = new Vue({
                 if(response.data.user){
                     this.name = response.data.user.name;
                 }else{
-                    this.name = "";
+                    this.name = "Account does not exist...";
                 }
 
                 })
