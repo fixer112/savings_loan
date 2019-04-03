@@ -241,14 +241,17 @@ class StaffController extends Controller
     			if ($request->input('type')=='deposit' || $request->input('type')=='payment'){
     				if (!isset($pending)) {
 
-                    if ($user->loan_balance == 0) {
-                        $request->session()->flash('failed', $user->username.' has no loan balance');
-                    return back();
+                    if (request()->rtpe == 'payment') {
+                       if ($user->loan_balance == 0) {
+                           $request->session()->flash('failed', $user->username.' has no loan balance');
+                       return back();
+                       }
+                       if (request()->amount > $user->loan_balance ) {
+                           $request->session()->flash('failed', 'Amount inputed is more than '.$user->username.' loan balance');
+                       return back();
+                       } 
                     }
-                    if (request()->amount > $user->loan_balance ) {
-                                    $request->session()->flash('failed', 'Amount inputed is more than '.$user->username.' loan balance');
-                                return back();
-                                }
+                   
     				History::create([
 			            'recieved_by' => $request->input('recieved'),
 			            'description' => $request->input('description'),
