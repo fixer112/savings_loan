@@ -155,10 +155,12 @@ HONEYPAYS | All Time Statistics
   <h2><strong>Total Transaction</strong></h2>
   <div class="row">
     <div class="card pad text-white bg-primary col-md-5">
+    <a href="" onclick="go({{$total_approved}})">
       <div class="card-body text-center">
         <h4 class="card-title">Number Of Transactions</h4>
         <p><strong>{{count($total_approved)}}</strong></p>
       </div>
+      </a>
     </div>
     
     <div class="card pad text-white bg-success col-md-5">
