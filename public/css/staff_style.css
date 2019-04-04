@@ -30,3 +30,7 @@ button a, button a:hover {
     border-color: black;
 
 }
+
+.card-body a {
+    color: white;
+}

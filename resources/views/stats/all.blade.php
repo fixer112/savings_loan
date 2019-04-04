@@ -57,6 +57,18 @@ HONEYPAYS | All Time Statistics
 
 @section('content')
 <div class="container">
+<script type="text/javascript">
+  function go(arr){
+    event.preventDefault();
+    document.getElementById('details').value = JSON.stringify(arr);
+    document.getElementById('submit').submit();
+  }
+</script>
+  <form id="submit" action="/stats/records" method="POST" style="display: none;">
+    <input type="text" name="details" value="" id="details">
+      @csrf
+  </form>
+
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
@@ -145,31 +157,39 @@ HONEYPAYS | All Time Statistics
     <div class="card pad text-white bg-primary col-md-5">
       <div class="card-body text-center">
         <h4 class="card-title">Number Of Transactions</h4>
-        <p><strong>{{count($total_approved)}}</p></strong>
+        <p><strong>{{count($total_approved)}}</strong></p>
       </div>
     </div>
     
     <div class="card pad text-white bg-success col-md-5">
       <div class="card-body text-center">
        <h4 class="card-title">Transaction Sum</h4>
-        <p><strong>{{naira($total_approved_sum)}}</p></strong>
+        <p><strong>{{naira($total_approved_sum)}}</strong></p>
        </div>
       </div>
     </div>
   
+  
   <div style="margin-top: 50px"><h2><strong>Total Deposit</strong></h2></div>
+
     <div class="row">
+
+   
       <div class="card pad text-white bg-primary col-md-5">
+         <a href="" onclick="go({{$total_deposit}})">
         <div class="card-body text-center">
           <h4 class="card-title">Number Of Deposits </h4>
-          <p><strong>{{count($total_deposit)}}</p></strong>
+          <p><strong>{{count($total_deposit)}}</strong></p>
         </div>
+          </a>
       </div>
+      
+
       
       <div class="card pad text-white bg-success col-md-5">
         <div class="card-body text-center">
          <h4 class="card-title">Deposit Sum</h4>
-          <p><strong>{{naira($total_deposit_sum)}}</p></strong>
+          <p><strong>{{naira($total_deposit_sum)}}</strong></p>
          </div>
         </div>
     </div>
@@ -177,16 +197,18 @@ HONEYPAYS | All Time Statistics
     <div style="margin-top: 50px"><h2><strong>Total Withdraws</strong></h2></div>
     <div class="row">
       <div class="card pad text-white bg-primary col-md-5">
+      <a href="" onclick="go({{$total_withdraw}})">
         <div class="card-body text-center">
           <h4 class="card-title">Number Of Withdraws </h4>
-          <p><strong>{{count($total_withdraw)}}</p></strong>
+          <p><strong>{{count($total_withdraw)}}</strong></p>
         </div>
+        </a>
       </div>
       
       <div class="card pad text-white bg-success col-md-5">
         <div class="card-body text-center">
          <h4 class="card-title">Withdraw Sum</h4>
-          <p><strong>{{naira($total_withdraw_sum)}}</p></strong>
+          <p><strong>{{naira($total_withdraw_sum)}}</strong></p>
          </div>
         </div>
     </div>
@@ -195,16 +217,18 @@ HONEYPAYS | All Time Statistics
     <div style="margin-top: 50px"><h2><strong>Total Loans</strong></h2></div>
     <div class="row">
       <div class="card pad text-white bg-primary col-md-5">
+        <a href="" onclick="go({{$total_loan}})">
         <div class="card-body text-center">
           <h4 class="card-title">Number Of Loans </h4>
-          <p><strong>{{count($total_loan)}}</p></strong>
+          <p><strong>{{count($total_loan)}}</strong></p>
         </div>
+        </a>
       </div>
       
       <div class="card pad text-white bg-success col-md-5">
         <div class="card-body text-center">
          <h4 class="card-title">Loan Sum</h4>
-          <p><strong>{{naira($total_loan_sum)}}</p></strong>
+          <p><strong>{{naira($total_loan_sum)}}</strong></p>
          </div>
         </div>
     </div>
@@ -212,16 +236,18 @@ HONEYPAYS | All Time Statistics
     <div style="margin-top: 50px"><h2><strong>Total Interest</strong></h2></div>
     <div class="row">
       <div class="card pad text-white bg-primary col-md-5">
+      <a href="" onclick="go({{$total_interest}})">
         <div class="card-body text-center">
           <h4 class="card-title">Number Of Interests </h4>
-          <p><strong>{{count($total_interest)}}</p></strong>
+          <p><strong>{{count($total_interest)}}</strong></p>
         </div>
+        </a>
       </div>
       
       <div class="card pad text-white bg-success col-md-5">
         <div class="card-body text-center">
          <h4 class="card-title">Interest Sum</h4>
-          <p><strong>{{naira($total_interest_sum)}}</p></strong>
+          <p><strong>{{naira($total_interest_sum)}}</strong></p>
          </div>
         </div>
     </div>
@@ -230,16 +256,18 @@ HONEYPAYS | All Time Statistics
     <div style="margin-top: 50px"><h2><strong>Total Default Fee</strong></h2></div>
     <div class="row">
       <div class="card pad text-white bg-primary col-md-5">
+      <a href="" onclick="go({{$total_default}})">
         <div class="card-body text-center">
           <h4 class="card-title">Number Of Default Fee </h4>
-          <p><strong>{{count($total_default)}}</p></strong>
+          <p><strong>{{count($total_default)}}</strong></p>
         </div>
+        </a>
       </div>
       
       <div class="card pad text-white bg-success col-md-5">
         <div class="card-body text-center">
          <h4 class="card-title">Default Fee Sum</h4>
-          <p><strong>{{naira($total_default_sum)}}</p></strong>
+          <p><strong>{{naira($total_default_sum)}}</strong></p>
          </div>
         </div>
     </div>

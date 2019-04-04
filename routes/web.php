@@ -159,6 +159,8 @@ Route::get('/stats/month', function () {
 });
 Route::get('/stats/all', 'StatsController@all');
 
+Route::post('/stats/records', 'StatsController@details');
+
 });
 //verify
 Route::any('/verify/add', 'VerifyController@verifyadd');

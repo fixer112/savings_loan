@@ -37,4 +37,12 @@ class StatsController extends Controller
 	    
 	    return view('stats.all', compact('from','to','branch'));
     }
+
+    public function details(){
+    	$this->validate(request(), [
+            'details' =>'required',
+        ]);
+    	$details = json_decode(request()->details);
+    	return view('stats.records',compact('details'));
+    }
 }
