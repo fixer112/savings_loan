@@ -241,7 +241,7 @@ class StaffController extends Controller
     			if ($request->input('type')=='deposit' || $request->input('type')=='payment'){
     				if (!isset($pending)) {
 
-                    if (request()->rtpe == 'payment') {
+                    if (request()->type == 'payment') {
                        if ($user->loan_balance == 0) {
                            $request->session()->flash('failed', $user->username.' has no loan balance');
                        return back();
