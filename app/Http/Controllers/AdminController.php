@@ -455,7 +455,7 @@ class AdminController extends Controller
 
         'description' => 'required',
 
-        'due_date' => 'required|date_format:d/m/y|after:yesterday',
+        'due_date' => 'required|date_format:d/m/y',
 
 		'category' => 'required',
 
