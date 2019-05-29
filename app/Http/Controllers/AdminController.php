@@ -425,7 +425,10 @@ class AdminController extends Controller
     
 
     public function transaction(Request $request){
-    	
+    	if (env('error')) {
+    return $this->showError(request());
+}
+
 
     		if ($request->input('type') != 'loan') {
 
