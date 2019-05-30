@@ -175,6 +175,17 @@ class Controller extends BaseController
         $data['error'] = "Account not found";
         return $data;
     }
+    public function showError($request)
+    {
+        if (request()->wantsJson()) {
+            return ['errors' => ['fail' => ['An Error Occured, Please try again later']]];
+
+        }
+
+        $request->session()->flash('failed', 'An Error Occured, Please try again later');
+        return back();
+
+    }
     public function putPermanentEnv($key, $value)
     {
         $path = app()->environmentFilePath();
@@ -186,5 +197,6 @@ class Controller extends BaseController
             "{$key}={$value}",
             file_get_contents($path)
         ));
+        return env($key);
     }
 }
