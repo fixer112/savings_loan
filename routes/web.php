@@ -184,3 +184,10 @@ Route::get('sms', 'Controller@custom_sms');
 
 Route::get('accountUser/{user}', 'Controller@accountUser');
 Route::get('/setting/{key}/{value}', 'Controller@putPermanentEnv');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/transfer', function () {
+        return view('common.transfer');
+    });
+    Route::post('/transfer', 'Controller@transfer');
+
+});

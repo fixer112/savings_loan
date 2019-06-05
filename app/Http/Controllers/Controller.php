@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Auth;
+use Log;
 
 class Controller extends BaseController
 {
@@ -198,5 +200,51 @@ class Controller extends BaseController
             file_get_contents($path)
         ));
         return env($key);
+    }
+    public function transfer()
+    {
+        // return request()->all();
+        if (Auth::user()->role == 'staff') {
+            request()->session()->flash('failed', 'Staff not allowed');
+            return back();
+
+        }
+        $validate = $this->validate(request(), [
+
+            'from' => 'required|numeric|exists:users,username',
+
+            'to' => 'required|numeric|exists:users,username',
+
+            'amount' => 'required|numeric|min:1',
+        ]);
+
+        $from = request()->from;
+        $to = request()->to;
+        $amount = request()->amount;
+
+        $fromUser = User::where('username', $from)->first();
+        $toUser = User::where('username', $to)->first();
+        //return $fromUser;
+        if ($amount > $fromUser->savings_balance) {
+            request()->session()->flash('failed', $from . ' has Insufficient Account Balance');
+            return back();
+
+        }
+
+        $fromUser->update(['savings_balance' => $fromUser->savings_balance - $amount]);
+        $toUser->update(['savings_balance' => $toUser->savings_balance + $amount]);
+
+        $messageFrom = 'Transfer of ' . $amount . ' to ' . $to . ' was successful';
+        $messageTo = 'Transfer of ' . $amount . ' from ' . $from . ' was successful';
+
+        Log::info($this->app('Transfer to ' . $to, $messageFrom, $from));
+        $this->sms($fromUser->number, urlencode($messageFrom));
+
+        Log::info($this->app('Transfer from ' . $from, $messageTo, $to));
+        $this->sms($toUser->number, urlencode($messageTo));
+
+        request()->session()->flash('success', 'Succesfully transfered ' . $amount . ' from ' . $from . ' to ' . $to);
+        return back();
+
     }
 }
