@@ -234,6 +234,26 @@ class Controller extends BaseController
         $fromUser->update(['savings_balance' => $fromUser->savings_balance - $amount]);
         $toUser->update(['savings_balance' => $toUser->savings_balance + $amount]);
 
+        History::create([
+            'recieved_by' => 'SELF',
+            'description' => 'Transfer of ' . $amount . ' to ' . $to,
+            'debit' => $amount,
+            'credit' => '0',
+            'type' => 'transfer',
+            'approved' => 'yes',
+            'user_id' => $fromUser->id,
+        ]);
+
+        History::create([
+            'recieved_by' => 'SELF',
+            'description' => 'Transfer of ' . $amount . ' from ' . $from,
+            'debit' => '0',
+            'credit' => $amount,
+            'type' => 'transfer',
+            'approved' => 'yes',
+            'user_id' => $toUser->id,
+        ]);
+
         $messageFrom = 'Transfer of ' . $amount . ' to ' . $to . ' was successful';
         $messageTo = 'Transfer of ' . $amount . ' from ' . $from . ' was successful';
 
