@@ -60,18 +60,193 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 11);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
+__webpack_require__(1);
+module.exports = __webpack_require__(2);
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * First we will load all of this project's JavaScript dependencies which
+ * includes Vue and other libraries. It is a great starting point when
+ * building robust, powerful web applications using Vue and Laravel.
+ */
+
+__webpack_require__(17);
+
+window.Vue = __webpack_require__(40);
+
+/**
+ * Next, we will create a fresh Vue application instance and attach it to
+ * the page. Then, you may begin adding components to this application
+ * or customize the JavaScript scaffolding to fit your unique needs.
+ */
+
+Vue.component('example-component', __webpack_require__(43));
+
+var reg = new Vue({
+    el: '#reg',
+    data: {
+        branch: "",
+        mobile: "",
+        acc_type: "",
+        loan_cat: "",
+        acc_num: "",
+        error: "",
+        hide: true
+    },
+    methods: {
+        hide_it: function hide_it() {
+            this.hide = true;
+        },
+        submit: function submit() {
+
+            if (this.acc_type == "" || this.branch == "" || this.mobile == "") {
+                this.error = 'Account type, Branch number and Mobile number field is required';
+                return false;
+            }
+            if (this.acc_type == "loan" && this.loan_cat == "") {
+                this.error = 'Loan category field is required';
+                return false;
+            }
+            return true;
+        },
+        get_num: function get_num() {
+            if (!this.submit()) {
+                return alert(this.error);
+            }
+            if (this.mobile.length < 5) {
+                return alert('Mobile number lenght must be more than 5');
+            }
+            if (isNaN(this.mobile)) {
+                return alert('Mobile number must be a valid number');
+            }
+            this.error = "";
+
+            var cat = "";
+            var mobile = this.mobile.substr(this.mobile.length - 5);
+            if (this.acc_type == 'savings') {
+                cat = 101;
+            } else if (this.acc_type == 'loan') {
+                cat = this.loan_cat;
+            }
+
+            this.hide = false;
+            var acc_no = this.branch.toString() + cat.toString() + mobile.toString();
+            this.acc_num = acc_no;
+            alert(acc_no);
+        }
+    }
+});
+
+var tran = new Vue({
+    el: '#tran',
+    data: function data() {
+        return {
+            name: "",
+            username: ""
+        };
+    },
+    methods: {
+        checkname: function checkname() {
+            var _this = this;
+
+            this.name = "Loading...";
+            axios.get('/accountUser/' + this.username).then(function (response) {
+                console.log(response.data);
+                if (response.data.user) {
+                    _this.name = response.data.user.name;
+                } else {
+                    _this.name = "Account does not exist...";
+                }
+            }).catch(function (error) {
+                console.log(error.response.data);
+            });
+        }
+    },
+    watch: {
+        username: function username() {
+            this.checkname();
+        }
+    },
+    created: function created() {
+        //alert(this.acc)
+        //this.acc_name = "Test"
+    }
+});
+
+var trans = new Vue({
+    el: '#trans',
+    data: function data() {
+        return {
+            from: '',
+            to: '',
+            fromName: "",
+            toName: ""
+        };
+    },
+    methods: {
+        checkname: function checkname(acc) {
+            var _this2 = this;
+
+            var n = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+
+            n == 'to' ? this.toName = 'Loading...' : this.fromName = 'Loading...';
+
+            axios.get('/accountUser/' + acc).then(function (response) {
+                console.log(response.data);
+                //return response.data.user;
+                if (response.data.user) {
+                    n == 'to' ? _this2.toName = response.data.user.name : _this2.fromName = response.data.user.name;
+                } else {
+                    n == 'to' ? _this2.toName = "Account does not exist..." : _this2.fromName = "Account does not exist...";
+                }
+            }).catch(function (error) {
+                console.log(error.response.data);
+            });
+        }
+    },
+    watch: {
+        to: function to(n) {
+            //this.toName = 'Loading Name...';
+            this.checkname(n, 'to');
+            //console.log(this.checkname(n, 'to'));
+        },
+        from: function from(n) {
+            this.checkname(n);
+        }
+    },
+    created: function created() {}
+});
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports) {
+
+throw new Error("Module build failed: ModuleBuildError: Module build failed: Error: Node Sass does not yet support your current environment: OS X 64-bit with Unsupported runtime (72)\nFor more information on which environments are supported please see:\nhttps://github.com/sass/node-sass/releases/tag/v4.9.2\n    at module.exports (/Users/fixer112/Documents/Projects/savings_loan/node_modules/node-sass/lib/binding.js:13:13)\n    at Object.<anonymous> (/Users/fixer112/Documents/Projects/savings_loan/node_modules/node-sass/lib/index.js:14:35)\n    at Module._compile (internal/modules/cjs/loader.js:759:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:770:10)\n    at Module.load (internal/modules/cjs/loader.js:628:32)\n    at Function.Module._load (internal/modules/cjs/loader.js:555:12)\n    at Module.require (internal/modules/cjs/loader.js:666:19)\n    at require (internal/modules/cjs/helpers.js:16:16)\n    at Object.<anonymous> (/Users/fixer112/Documents/Projects/savings_loan/node_modules/sass-loader/lib/loader.js:3:14)\n    at Module._compile (internal/modules/cjs/loader.js:759:30)\n    at Object.Module._extensions..js (internal/modules/cjs/loader.js:770:10)\n    at Module.load (internal/modules/cjs/loader.js:628:32)\n    at Function.Module._load (internal/modules/cjs/loader.js:555:12)\n    at Module.require (internal/modules/cjs/loader.js:666:19)\n    at require (internal/modules/cjs/helpers.js:16:16)\n    at loadLoader (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/loadLoader.js:13:17)\n    at iteratePitchingLoaders (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:169:2)\n    at iteratePitchingLoaders (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:165:10)\n    at /Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:173:18\n    at loadLoader (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/loadLoader.js:36:3)\n    at iteratePitchingLoaders (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:169:2)\n    at iteratePitchingLoaders (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:165:10)\n    at /Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:173:18\n    at loadLoader (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/loadLoader.js:36:3)\n    at iteratePitchingLoaders (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:169:2)\n    at iteratePitchingLoaders (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:165:10)\n    at /Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:173:18\n    at loadLoader (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/loadLoader.js:36:3)\n    at iteratePitchingLoaders (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:169:2)\n    at runLoaders (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:362:2)\n    at /Users/fixer112/Documents/Projects/savings_loan/node_modules/webpack/lib/NormalModule.js:195:19\n    at /Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:364:11\n    at /Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:170:18\n    at loadLoader (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/loadLoader.js:27:11)\n    at iteratePitchingLoaders (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:169:2)\n    at iteratePitchingLoaders (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:165:10)\n    at /Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:173:18\n    at loadLoader (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/loadLoader.js:36:3)\n    at iteratePitchingLoaders (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:169:2)\n    at iteratePitchingLoaders (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:165:10)\n    at /Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:173:18\n    at loadLoader (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/loadLoader.js:36:3)\n    at iteratePitchingLoaders (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:169:2)\n    at iteratePitchingLoaders (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:165:10)\n    at /Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:173:18\n    at loadLoader (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/loadLoader.js:36:3)\n    at iteratePitchingLoaders (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:169:2)\n    at runLoaders (/Users/fixer112/Documents/Projects/savings_loan/node_modules/loader-runner/lib/LoaderRunner.js:362:2)\n    at NormalModule.doBuild (/Users/fixer112/Documents/Projects/savings_loan/node_modules/webpack/lib/NormalModule.js:182:3)\n    at NormalModule.build (/Users/fixer112/Documents/Projects/savings_loan/node_modules/webpack/lib/NormalModule.js:275:15)\n    at Compilation.buildModule (/Users/fixer112/Documents/Projects/savings_loan/node_modules/webpack/lib/Compilation.js:157:10)\n    at /Users/fixer112/Documents/Projects/savings_loan/node_modules/webpack/lib/Compilation.js:460:10\n    at /Users/fixer112/Documents/Projects/savings_loan/node_modules/webpack/lib/NormalModuleFactory.js:243:5\n    at /Users/fixer112/Documents/Projects/savings_loan/node_modules/webpack/lib/NormalModuleFactory.js:94:13\n    at /Users/fixer112/Documents/Projects/savings_loan/node_modules/tapable/lib/Tapable.js:268:11\n    at NormalModuleFactory.<anonymous> (/Users/fixer112/Documents/Projects/savings_loan/node_modules/webpack/lib/CompatibilityPlugin.js:52:5)\n    at NormalModuleFactory.applyPluginsAsyncWaterfall (/Users/fixer112/Documents/Projects/savings_loan/node_modules/tapable/lib/Tapable.js:272:13)\n    at /Users/fixer112/Documents/Projects/savings_loan/node_modules/webpack/lib/NormalModuleFactory.js:69:10\n    at /Users/fixer112/Documents/Projects/savings_loan/node_modules/webpack/lib/NormalModuleFactory.js:196:7\n    at processTicksAndRejections (internal/process/task_queues.js:82:9)");
+
+/***/ }),
+/* 3 */,
+/* 4 */,
+/* 5 */,
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 
-var bind = __webpack_require__(5);
-var isBuffer = __webpack_require__(19);
+var bind = __webpack_require__(11);
+var isBuffer = __webpack_require__(23);
 
 /*global toString:true*/
 
@@ -374,7 +549,7 @@ module.exports = {
 
 
 /***/ }),
-/* 1 */
+/* 7 */
 /***/ (function(module, exports) {
 
 var g;
@@ -401,14 +576,14 @@ module.exports = g;
 
 
 /***/ }),
-/* 2 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var utils = __webpack_require__(0);
-var normalizeHeaderName = __webpack_require__(21);
+var utils = __webpack_require__(6);
+var normalizeHeaderName = __webpack_require__(25);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -424,10 +599,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(7);
+    adapter = __webpack_require__(13);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(7);
+    adapter = __webpack_require__(13);
   }
   return adapter;
 }
@@ -502,10 +677,10 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)))
 
 /***/ }),
-/* 3 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3031,10 +3206,10 @@ Popper.Defaults = Defaults;
 /* harmony default export */ __webpack_exports__["default"] = (Popper);
 //# sourceMappingURL=popper.js.map
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(7)))
 
 /***/ }),
-/* 4 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -13405,7 +13580,7 @@ return jQuery;
 
 
 /***/ }),
-/* 5 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13423,7 +13598,7 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 6 */
+/* 12 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -13613,19 +13788,19 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 7 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(0);
-var settle = __webpack_require__(22);
-var buildURL = __webpack_require__(24);
-var parseHeaders = __webpack_require__(25);
-var isURLSameOrigin = __webpack_require__(26);
-var createError = __webpack_require__(8);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(27);
+var utils = __webpack_require__(6);
+var settle = __webpack_require__(26);
+var buildURL = __webpack_require__(28);
+var parseHeaders = __webpack_require__(29);
+var isURLSameOrigin = __webpack_require__(30);
+var createError = __webpack_require__(14);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(31);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -13722,7 +13897,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(28);
+      var cookies = __webpack_require__(32);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -13800,13 +13975,13 @@ module.exports = function xhrAdapter(config) {
 
 
 /***/ }),
-/* 8 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var enhanceError = __webpack_require__(23);
+var enhanceError = __webpack_require__(27);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -13825,7 +14000,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 9 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13837,7 +14012,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 10 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13863,134 +14038,12 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(12);
-module.exports = __webpack_require__(43);
-
-
-/***/ }),
-/* 12 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
-
-__webpack_require__(13);
-
-window.Vue = __webpack_require__(36);
-
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
-Vue.component('example-component', __webpack_require__(39));
-
-var reg = new Vue({
-    el: '#reg',
-    data: {
-        branch: "",
-        mobile: "",
-        acc_type: "",
-        loan_cat: "",
-        acc_num: "",
-        error: "",
-        hide: true
-    },
-    methods: {
-        hide_it: function hide_it() {
-            this.hide = true;
-        },
-        submit: function submit() {
-
-            if (this.acc_type == "" || this.branch == "" || this.mobile == "") {
-                this.error = 'Account type, Branch number and Mobile number field is required';
-                return false;
-            }
-            if (this.acc_type == "loan" && this.loan_cat == "") {
-                this.error = 'Loan category field is required';
-                return false;
-            }
-            return true;
-        },
-        get_num: function get_num() {
-            if (!this.submit()) {
-                return alert(this.error);
-            }
-            if (this.mobile.length < 5) {
-                return alert('Mobile number lenght must be more than 5');
-            }
-            if (isNaN(this.mobile)) {
-                return alert('Mobile number must be a valid number');
-            }
-            this.error = "";
-
-            var cat = "";
-            var mobile = this.mobile.substr(this.mobile.length - 5);
-            if (this.acc_type == 'savings') {
-                cat = 101;
-            } else if (this.acc_type == 'loan') {
-                cat = this.loan_cat;
-            }
-
-            this.hide = false;
-            var acc_no = this.branch.toString() + cat.toString() + mobile.toString();
-            this.acc_num = acc_no;
-            alert(acc_no);
-        }
-    }
-});
-
-var tran = new Vue({
-    el: '#tran',
-    data: function data() {
-        return {
-            name: "",
-            username: ""
-        };
-    },
-    methods: {
-        checkname: function checkname() {
-            var _this = this;
-
-            this.name = "Loading...";
-            axios.get('/accountUser/' + this.username).then(function (response) {
-                console.log(response.data);
-                if (response.data.user) {
-                    _this.name = response.data.user.name;
-                } else {
-                    _this.name = "Account does not exist...";
-                }
-            }).catch(function (error) {
-                console.log(error.response.data);
-            });
-        }
-    },
-    watch: {
-        username: function username() {
-            this.checkname();
-        }
-    },
-    created: function created() {
-        //alert(this.acc)
-        //this.acc_name = "Test"
-    }
-});
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-window._ = __webpack_require__(14);
-window.Popper = __webpack_require__(3).default;
+window._ = __webpack_require__(18);
+window.Popper = __webpack_require__(9).default;
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -13999,9 +14052,9 @@ window.Popper = __webpack_require__(3).default;
  */
 
 try {
-  window.$ = window.jQuery = __webpack_require__(4);
+  window.$ = window.jQuery = __webpack_require__(10);
 
-  __webpack_require__(16);
+  __webpack_require__(20);
 } catch (e) {}
 
 /**
@@ -14010,7 +14063,7 @@ try {
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = __webpack_require__(17);
+window.axios = __webpack_require__(21);
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -14046,7 +14099,7 @@ if (token) {
 // });
 
 /***/ }),
-/* 14 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -31156,10 +31209,10 @@ if (token) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(15)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(19)(module)))
 
 /***/ }),
-/* 15 */
+/* 19 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -31187,7 +31240,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 16 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -31196,7 +31249,7 @@ module.exports = function(module) {
   * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
   */
 (function (global, factory) {
-   true ? factory(exports, __webpack_require__(4), __webpack_require__(3)) :
+   true ? factory(exports, __webpack_require__(10), __webpack_require__(9)) :
   typeof define === 'function' && define.amd ? define(['exports', 'jquery', 'popper.js'], factory) :
   (factory((global.bootstrap = {}),global.jQuery,global.Popper));
 }(this, (function (exports,$,Popper) { 'use strict';
@@ -35137,22 +35190,22 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 17 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(18);
+module.exports = __webpack_require__(22);
 
 /***/ }),
-/* 18 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(0);
-var bind = __webpack_require__(5);
-var Axios = __webpack_require__(20);
-var defaults = __webpack_require__(2);
+var utils = __webpack_require__(6);
+var bind = __webpack_require__(11);
+var Axios = __webpack_require__(24);
+var defaults = __webpack_require__(8);
 
 /**
  * Create an instance of Axios
@@ -35185,15 +35238,15 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(10);
-axios.CancelToken = __webpack_require__(34);
-axios.isCancel = __webpack_require__(9);
+axios.Cancel = __webpack_require__(16);
+axios.CancelToken = __webpack_require__(38);
+axios.isCancel = __webpack_require__(15);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(35);
+axios.spread = __webpack_require__(39);
 
 module.exports = axios;
 
@@ -35202,7 +35255,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 19 */
+/* 23 */
 /***/ (function(module, exports) {
 
 /*!
@@ -35229,16 +35282,16 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-/* 20 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var defaults = __webpack_require__(2);
-var utils = __webpack_require__(0);
-var InterceptorManager = __webpack_require__(29);
-var dispatchRequest = __webpack_require__(30);
+var defaults = __webpack_require__(8);
+var utils = __webpack_require__(6);
+var InterceptorManager = __webpack_require__(33);
+var dispatchRequest = __webpack_require__(34);
 
 /**
  * Create a new instance of Axios
@@ -35315,13 +35368,13 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 21 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(6);
 
 module.exports = function normalizeHeaderName(headers, normalizedName) {
   utils.forEach(headers, function processHeader(value, name) {
@@ -35334,13 +35387,13 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 22 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var createError = __webpack_require__(8);
+var createError = __webpack_require__(14);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -35367,7 +35420,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 23 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35395,13 +35448,13 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 24 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(6);
 
 function encode(val) {
   return encodeURIComponent(val).
@@ -35468,13 +35521,13 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 25 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(6);
 
 // Headers whose duplicates are ignored by node
 // c.f. https://nodejs.org/api/http.html#http_message_headers
@@ -35528,13 +35581,13 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 26 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(6);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -35603,7 +35656,7 @@ module.exports = (
 
 
 /***/ }),
-/* 27 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35646,13 +35699,13 @@ module.exports = btoa;
 
 
 /***/ }),
-/* 28 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(6);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -35706,13 +35759,13 @@ module.exports = (
 
 
 /***/ }),
-/* 29 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(6);
 
 function InterceptorManager() {
   this.handlers = [];
@@ -35765,18 +35818,18 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 30 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(0);
-var transformData = __webpack_require__(31);
-var isCancel = __webpack_require__(9);
-var defaults = __webpack_require__(2);
-var isAbsoluteURL = __webpack_require__(32);
-var combineURLs = __webpack_require__(33);
+var utils = __webpack_require__(6);
+var transformData = __webpack_require__(35);
+var isCancel = __webpack_require__(15);
+var defaults = __webpack_require__(8);
+var isAbsoluteURL = __webpack_require__(36);
+var combineURLs = __webpack_require__(37);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -35858,13 +35911,13 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 31 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(6);
 
 /**
  * Transform the data for a request or a response
@@ -35885,7 +35938,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 32 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35906,7 +35959,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 33 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35927,13 +35980,13 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 34 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Cancel = __webpack_require__(10);
+var Cancel = __webpack_require__(16);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -35991,7 +36044,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 35 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36025,7 +36078,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 36 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46988,10 +47041,10 @@ Vue.compile = compileToFunctions;
 
 module.exports = Vue;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(37).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(41).setImmediate))
 
 /***/ }),
-/* 37 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
@@ -47047,7 +47100,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(38);
+__webpack_require__(42);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -47058,10 +47111,10 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ }),
-/* 38 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -47251,18 +47304,18 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(12)))
 
 /***/ }),
-/* 39 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(40)
+var normalizeComponent = __webpack_require__(44)
 /* script */
-var __vue_script__ = __webpack_require__(41)
+var __vue_script__ = __webpack_require__(45)
 /* template */
-var __vue_template__ = __webpack_require__(42)
+var __vue_template__ = __webpack_require__(46)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -47279,7 +47332,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources\\assets\\js\\components\\ExampleComponent.vue"
+Component.options.__file = "resources/assets/js/components/ExampleComponent.vue"
 
 /* hot reload */
 if (false) {(function () {
@@ -47288,9 +47341,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-0ca92eac", Component.options)
+    hotAPI.createRecord("data-v-7168fb6a", Component.options)
   } else {
-    hotAPI.reload("data-v-0ca92eac", Component.options)
+    hotAPI.reload("data-v-7168fb6a", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -47301,7 +47354,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 40 */
+/* 44 */
 /***/ (function(module, exports) {
 
 /* globals __VUE_SSR_CONTEXT__ */
@@ -47410,7 +47463,7 @@ module.exports = function normalizeComponent (
 
 
 /***/ }),
-/* 41 */
+/* 45 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -47439,7 +47492,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 42 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -47477,15 +47530,9 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-0ca92eac", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-7168fb6a", module.exports)
   }
 }
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

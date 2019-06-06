@@ -12,7 +12,8 @@ HONEYPAYS | Transfer
 @endsection
 
 @section('js')
-
+<script src="{{ asset('js/vue.js') }}"></script>
+<script src="{{ asset('js/axios.js') }}"></script>
 
 @endsection
 
@@ -47,7 +48,7 @@ HONEYPAYS | Transfer
                     </div>
                     @endif
 
-                    <form class="form-horizontal" method="POST" action="/transfer" id="tran">
+                    <form class="form-horizontal" method="POST" action="/transfer" id="trans">
                         {{ csrf_field() }}
 
                         @if(Auth::user()->role != 'customer')
@@ -55,14 +56,21 @@ HONEYPAYS | Transfer
                             <label for="from" class="col-md-4 control-label">From Acc No</label>
 
                             <div class="col-md-12">
-                                <input id="from" type="text" class="form-control" name="from" value="{{ old('from') }}"
-                                    required autofocus>
+                                <input id="from" v-model="from" type="text" class="form-control" name="from"
+                                    value="{{ old('from') }}" required autofocus>
 
                                 @if ($errors->has('from'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('from') }}</strong>
                                 </span>
                                 @endif
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">From Acc Name</label>
+
+                            <div class="col-md-12">
+                                <input type="text" class="form-control" v-model="fromName" required disabled>
                             </div>
                         </div>
                         @else
@@ -77,14 +85,22 @@ HONEYPAYS | Transfer
                             <label for="from" class="col-md-4 control-label">To Acc No</label>
 
                             <div class="col-md-12">
-                                <input id="to" type="text" class="form-control" name="to" value="{{ old('to') }}"
-                                    required autofocus>
+                                <input id="to" v-model="to" type="text" class="form-control" name="to"
+                                    value="{{ old('to') }}" required autofocus>
 
                                 @if ($errors->has('to'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('to') }}</strong>
                                 </span>
                                 @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">To Acc Name</label>
+
+                            <div class="col-md-12">
+                                <input type="text" class="form-control" v-model="toName" required disabled>
                             </div>
                         </div>
 
@@ -98,6 +114,20 @@ HONEYPAYS | Transfer
                                 @if ($errors->has('amount'))
                                 <span class="help-block">
                                     <strong>{{ $errors->first('amount') }}</strong>
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group{{ $errors->has('desc') ? ' has-error' : '' }}">
+                            <label for="desc" class="col-md-4 control-label">Description</label>
+
+                            <div class="col-md-12">
+                                <input id="desc" type="text" class="form-control" name="desc" value="{{ old('desc')}}">
+
+                                @if ($errors->has('desc'))
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('desc') }}</strong>
                                 </span>
                                 @endif
                             </div>

@@ -8,7 +8,7 @@ $id = Auth::user()->id;
 @endsection
 
 @section('title')
-HONEYPAYS |  Transaction
+HONEYPAYS | Transaction
 @endsection
 
 @section('js')
@@ -45,41 +45,42 @@ HONEYPAYS |  Transaction
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-            
+
                 <div class="card-header"><strong>ADD CUSTOMER TRANSACTION</strong></div>
 
-            <div class="card-body">
-            @if (session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div>
+                <div class="card-body">
+                    @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
                     @endif
 
                     @if (session('sms'))
-                        <div class="alert alert-success">
-                            {{ session('sms') }}
-                        </div>
+                    <div class="alert alert-success">
+                        {{ session('sms') }}
+                    </div>
                     @endif
 
                     @if (session('failed'))
-                        <div class="alert alert-danger">
-                            {{ session('failed') }}
-                        </div>
+                    <div class="alert alert-danger">
+                        {{ session('failed') }}
+                    </div>
                     @endif
 
-<form class="form-horizontal" method="POST" action="/{{Auth::user()->role}}/verifytrans" id="tran">
+                    <form class="form-horizontal" method="POST" action="/{{Auth::user()->role}}/verifytrans" id="tran">
                         {{ csrf_field() }}
 
                         <div class="form-group{{ $errors->has('username') ? ' has-error' : '' }}">
                             <label for="username" class="col-md-4 control-label">Acc No</label>
 
                             <div class="col-md-6">
-                                <input id="username" type="text" class="form-control" name="username" v-model="username" value="{{ old('username') }}" required autofocus>
+                                <input id="username" type="text" class="form-control" name="username" v-model="username"
+                                    value="{{ old('username') }}" required autofocus>
 
                                 @if ($errors->has('username'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('username') }}</strong>
-                                    </span>
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('username') }}</strong>
+                                </span>
                                 @endif
                             </div>
                         </div>
@@ -89,7 +90,8 @@ HONEYPAYS |  Transaction
                             <label for="name" class="col-md-4 control-label">Acc Name</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control" name="name" v-model="name" disabled required>
+                                <input id="name" type="text" class="form-control" name="name" v-model="name" disabled
+                                    required>
                             </div>
                         </div>
 
@@ -97,12 +99,13 @@ HONEYPAYS |  Transaction
                             <label for="amount" class="col-md-4 control-label">Amount</label>
 
                             <div class="col-md-6">
-                                <input id="amount" type="number" class="form-control" name="amount" value="{{ old('amount')}}" required autofocus>
+                                <input id="amount" type="number" class="form-control" name="amount"
+                                    value="{{ old('amount')}}" required autofocus>
 
                                 @if ($errors->has('amount'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('amount') }}</strong>
-                                    </span>
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('amount') }}</strong>
+                                </span>
                                 @endif
                             </div>
                         </div>
@@ -111,34 +114,36 @@ HONEYPAYS |  Transaction
                             <label for="type" class="col-md-4 control-label">Transaction Type</label>
 
                             <div class="col-md-6">
-                                <select id="type" type="option" class="form-control" name="type" value="{{ old('type') }}" required autofocus>
+                                <select id="type" type="option" class="form-control" name="type"
+                                    value="{{ old('type') }}" required autofocus>
 
-                                <option value="deposit">DEPOSIT</option>
-                                <option value="payment">LOAN PAYMENT</option>
-                                <option value="withdraw">WITHDRAW</option>
-                                <option value="default_fee">DEFAULT FEE</option>
-                                <option value="interest_fee">INTEREST FEE</option>
-                                <option value="loan">LOAN</option>
+                                    <option value="deposit">DEPOSIT</option>
+                                    <option value="payment">LOAN PAYMENT</option>
+                                    <option value="withdraw">WITHDRAW</option>
+                                    <option value="default_fee">DEFAULT FEE</option>
+                                    <option value="interest_fee">INTEREST FEE</option>
+                                    <option value="loan">LOAN</option>
                                 </select>
 
                                 @if ($errors->has('type'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('type') }}</strong>
-                                    </span>
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('type') }}</strong>
+                                </span>
                                 @endif
                             </div>
                         </div>
-                        
+
                         <div class="form-group{{ $errors->has('recieved') ? ' has-error' : '' }}">
                             <label for="recieved" class="col-md-4 control-label">Recieved By</label>
 
                             <div class="col-md-6">
-                                <input id="recieved" type="text" class="form-control" value="{{ old('recieved') }}" name="recieved" required>
+                                <input id="recieved" type="text" class="form-control" value="{{ old('recieved') }}"
+                                    name="recieved" required>
 
                                 @if ($errors->has('recieved'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('recieved') }}</strong>
-                                    </span>
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('recieved') }}</strong>
+                                </span>
                                 @endif
                             </div>
                         </div>
@@ -148,12 +153,13 @@ HONEYPAYS |  Transaction
                             <label for="description" class="col-md-4 control-label">Transaction Description</label>
 
                             <div class="col-md-6">
-                                <input id="description" type="text" class="form-control" name="description" value="{{ old('description') }}" required>
+                                <input id="description" type="text" class="form-control" name="description"
+                                    value="{{ old('description') }}" required>
 
                                 @if ($errors->has('description'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('description') }}</strong>
-                                    </span>
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('description') }}</strong>
+                                </span>
                                 @endif
                             </div>
                         </div>
@@ -163,16 +169,16 @@ HONEYPAYS |  Transaction
 
                             <div class="col-md-6">
                                 <select id="category" type="option" class="form-control" name="category" disabled>
-                                <option value="30000">30,000</option>
-                                <option value="60000">60,000</option>
-                                <option value="150000">150,000</option>
-                                <option value="300000">300,000</option>
+                                    <option value="30000">30,000</option>
+                                    <option value="60000">60,000</option>
+                                    <option value="150000">150,000</option>
+                                    <option value="300000">300,000</option>
                                 </select>
 
                                 @if ($errors->has('category'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('category') }}</strong>
-                                    </span>
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('category') }}</strong>
+                                </span>
                                 @endif
                             </div>
                         </div>
@@ -181,12 +187,13 @@ HONEYPAYS |  Transaction
                             <label for="due_date" class="col-md-4 control-label">Loan Due Date</label>
 
                             <div class="col-md-6">
-                                <input id="due_date" type="text" class="form-control" name="due_date" placeholder="dd/mm/yy e.g 21/03/18" value="{{ old('due_date') }}" disabled>
+                                <input id="due_date" type="text" class="form-control" name="due_date"
+                                    placeholder="dd/mm/yy e.g 21/03/18" value="{{ old('due_date') }}" disabled>
 
                                 @if ($errors->has('due_date'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('due_date') }}</strong>
-                                    </span>
+                                <span class="help-block">
+                                    <strong>{{ $errors->first('due_date') }}</strong>
+                                </span>
                                 @endif
                             </div>
                         </div>
@@ -199,8 +206,8 @@ HONEYPAYS |  Transaction
                             </div>
                         </div>
                     </form>
-                   </div>
-          </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

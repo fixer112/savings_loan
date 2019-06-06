@@ -216,6 +216,8 @@ class Controller extends BaseController
             'to' => 'required|numeric|exists:users,username',
 
             'amount' => 'required|numeric|min:1',
+
+            'desc' => 'max:150',
         ]);
 
         $from = request()->from;
@@ -224,19 +226,28 @@ class Controller extends BaseController
 
         $fromUser = User::where('username', $from)->first();
         $toUser = User::where('username', $to)->first();
+
+        if ($fromUser->role != 'customer' || $toUser->role != 'customer') {
+            request()->session()->flash('failed', 'Can only transfer from and to customer');
+            return back();
+
+        }
+
         //return $fromUser;
-        if ($amount > $fromUser->savings_balance) {
+        $fee = $fromUser->referal < 20 ? 50 : 10 * 350;
+
+        if (($amount + $fee) > $fromUser->savings_balance) {
             request()->session()->flash('failed', $from . ' has Insufficient Account Balance');
             return back();
 
         }
 
-        $fromUser->update(['savings_balance' => $fromUser->savings_balance - $amount]);
+        $fromUser->update(['savings_balance' => $fromUser->savings_balance - ($amount + $fee)]);
         $toUser->update(['savings_balance' => $toUser->savings_balance + $amount]);
 
         History::create([
             'recieved_by' => 'SELF',
-            'description' => 'Transfer of ' . $amount . ' to ' . $to,
+            'description' => request()->desc ? request()->desc : 'Transfer of ' . $amount . ' to ' . $to,
             'debit' => $amount,
             'credit' => '0',
             'type' => 'transfer',
@@ -246,7 +257,7 @@ class Controller extends BaseController
 
         History::create([
             'recieved_by' => 'SELF',
-            'description' => 'Transfer of ' . $amount . ' from ' . $from,
+            'description' => request()->desc ? request()->desc : 'Transfer of ' . $amount . ' from ' . $from,
             'debit' => '0',
             'credit' => $amount,
             'type' => 'transfer',
