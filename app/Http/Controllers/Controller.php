@@ -204,6 +204,10 @@ class Controller extends BaseController
     public function transfer()
     {
         // return request()->all();
+        if (env('error')) {
+            return $this->showError(request());
+        }
+
         if (Auth::user()->role == 'staff') {
             request()->session()->flash('failed', 'Staff not allowed');
             return back();
