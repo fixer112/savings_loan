@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->insert([
             'name' => 'Admin',
             //'email' => 'abula@gmail.com',
-            'password' => bcrypt('abula'),
+            'password' => bcrypt('abula112'),
             'role' => 'admin',
             'mentor' => '01',
             'username' => '12345',
@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->insert([
             'name' => 'HoneyPay Staff 1',
             //'email' => 'abuk@gmail.com',
-            'password' => bcrypt('abula'),
+            'password' => bcrypt('abula112'),
             'role' => 'staff',
             'mentor' => '01',
             'username' => '1234567',
@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->insert([
             'name' => 'Honeypay Customer 1',
             //'email' => 'abusk@gmail.com',
-            'password' => bcrypt('abula'),
+            'password' => bcrypt('abula112'),
             'role' => 'admin2',
             'savings_balance' => '0',
             'mentor' => '01',
@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->insert([
             'name' => 'Honeypay Customer 2',
             //'email' => 'abusk@gmail.com',
-            'password' => bcrypt('abula'),
+            'password' => bcrypt('abula112'),
             'role' => 'customer',
             'number' => '04106833949',
             'referal' => '01',
