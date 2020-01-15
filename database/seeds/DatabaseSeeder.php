@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('abula'),
             'role' => 'admin',
             'mentor' => '01',
-            'username' => '607055',
+            'username' => '12345',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('abula'),
             'role' => 'staff',
             'mentor' => '01',
-            'username' => '123456',
+            'username' => '1234567',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin2',
             'savings_balance' => '0',
             'mentor' => '01',
-            'username' => '12345',
+            'username' => '123456',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
@@ -52,26 +52,26 @@ class DatabaseSeeder extends Seeder
             //'email' => 'abusk@gmail.com',
             'password' => bcrypt('abula'),
             'role' => 'customer',
-            'number' => '08106813749',
+            'number' => '04106833949',
             'referal' => '01',
             'savings_balance' => '0',
-            'username' => '1234567',
-            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-            'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
-        ]);
-
-        DB::table('users')->insert([
-            'name' => 'Test',
-            //'email' => 'abusk@gmail.com',
-            'password' => bcrypt('abula'),
-            'role' => 'customer',
-            'number' => '08106813749',
-            'referal' => '01',
-            'savings_balance' => '10000',
             'username' => '12345678',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
+
+        /* DB::table('users')->insert([
+        'name' => 'Test',
+        //'email' => 'abusk@gmail.com',
+        'password' => bcrypt('abula'),
+        'role' => 'customer',
+        'number' => '08106813749',
+        'referal' => '01',
+        'savings_balance' => '10000',
+        'username' => '12345678',
+        'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+        'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
+        ]); */
 
         /*   DB::table('loans')->insert([
     'due_date' => Carbon::createFromTimeStamp(strtotime('2018/04/05'))->format('Y-m-d H:i:s'),
